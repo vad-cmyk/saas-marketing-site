@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const origin = request.headers.get('origin') ?? '';
+  const origin = request.nextUrl.origin;
 
   const session = await stripe.checkout.sessions.create({
     mode: 'subscription',
