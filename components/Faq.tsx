@@ -1,7 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Reveal from "./Reveal";
+
+// Answer-reveal timing: kept in sync with the transform/opacity transition
+// below so the grid row only collapses once the fade-out has finished.
+const ANSWER_TRANSITION_MS = 300;
 
 const faqs = [
   {
@@ -33,6 +37,23 @@ function FaqItem({
   isOpen: boolean;
   onToggle: () => void;
 }) {
+  // The grid row (which reserves/reclaims vertical space) toggles instantly —
+  // animating `grid-template-rows` itself is a layout property, which the
+  // transform/opacity-only rule forbids. Instead we drive the *visible*
+  // reveal entirely with transform + opacity on the answer text, and only
+  // collapse the row once that fade-out has actually finished, so the
+  // close motion still reads as smooth rather than an abrupt snap.
+  const [rowOpen, setRowOpen] = useState(isOpen);
+
+  useEffect(() => {
+    if (isOpen) {
+      setRowOpen(true);
+      return;
+    }
+    const timer = setTimeout(() => setRowOpen(false), ANSWER_TRANSITION_MS);
+    return () => clearTimeout(timer);
+  }, [isOpen]);
+
   return (
     <div className="border-b border-line/80">
       <button
@@ -50,12 +71,18 @@ function FaqItem({
           +
         </span>
       </button>
-      <div
-        className="grid transition-[grid-template-rows] duration-400 ease-out"
-        style={{ gridTemplateRows: isOpen ? "1fr" : "0fr" }}
-      >
+      <div className="grid" style={{ gridTemplateRows: rowOpen ? "1fr" : "0fr" }}>
         <div className="overflow-hidden">
-          <p className="max-w-2xl pb-6 text-[0.975rem] text-ink-soft">{a}</p>
+          <p
+            className="max-w-2xl origin-top pb-6 text-[0.975rem] text-ink-soft transition-[transform,opacity] ease-out"
+            style={{
+              transitionDuration: `${ANSWER_TRANSITION_MS}ms`,
+              opacity: isOpen ? 1 : 0,
+              transform: isOpen ? "translateY(0) scaleY(1)" : "translateY(-6px) scaleY(0.98)",
+            }}
+          >
+            {a}
+          </p>
         </div>
       </div>
     </div>

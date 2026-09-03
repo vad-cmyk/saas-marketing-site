@@ -23,7 +23,7 @@ export default function Nav() {
 
         <a
           href="#pricing"
-          className="rounded-full bg-clay px-5 py-2.5 text-sm font-semibold text-paper shadow-[0_8px_20px_-8px_rgba(156,68,35,0.55)] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:bg-clay-deep hover:shadow-[0_12px_26px_-8px_rgba(156,68,35,0.65)] active:translate-y-0"
+          className="rounded-full bg-clay px-5 py-2.5 text-sm font-semibold text-paper shadow-[0_8px_20px_-8px_rgba(156,68,35,0.55)] transition-[transform,background-color,box-shadow] duration-300 ease-out hover:-translate-y-0.5 hover:bg-clay-deep hover:shadow-[0_12px_26px_-8px_rgba(156,68,35,0.65)] active:translate-y-0"
         >
           Start free trial
         </a>

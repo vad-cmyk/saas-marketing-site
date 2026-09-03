@@ -52,7 +52,7 @@ export default function Features() {
         <div className="mt-16 grid gap-6 lg:grid-cols-3">
           {features.map((feature, i) => (
             <Reveal key={feature.title} delay={i * 110}>
-              <div className="group h-full rounded-2xl border border-line bg-paper p-8 shadow-[0_1px_0_rgba(33,28,23,0.03)] transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-[0_24px_40px_-20px_rgba(33,28,23,0.22)]">
+              <div className="group h-full rounded-2xl border border-line bg-paper p-8 shadow-[0_1px_0_rgba(33,28,23,0.03)] transition-[transform,box-shadow] duration-300 ease-out hover:-translate-y-1.5 hover:shadow-[0_24px_40px_-20px_rgba(33,28,23,0.22)]">
                 <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-clay/10 text-clay-deep transition-colors duration-300 group-hover:bg-clay/16">
                   {feature.icon}
                 </div>
