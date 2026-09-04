@@ -19,6 +19,7 @@ export async function POST(request: NextRequest) {
     line_items: [{ price: STAGINGHUB_PRICE_ID, quantity: 1 }],
     customer_email: email,
     payment_method_collection: 'if_required',
+    metadata: { business_name: businessName },
     subscription_data: {
       trial_period_days: 14,
       trial_settings: {
