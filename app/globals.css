@@ -146,3 +146,19 @@ h1, h2, h3, h4 {
 .link-sweep:hover::after {
   transform: scaleX(1);
 }
+
+/* Accent resolves to an organization's brand color when set (via the inline
+   --accent custom property), otherwise falls back to the house clay tone —
+   so the proposal page reads as fully designed even with zero branding
+   configured. */
+.accent-text {
+  color: var(--accent, var(--clay));
+}
+
+.accent-bg {
+  background-color: var(--accent, var(--clay));
+}
+
+.accent-border {
+  border-color: var(--accent, var(--clay));
+}
