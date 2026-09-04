@@ -1,7 +1,29 @@
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 import type { CSSProperties } from 'react';
 import { getProposal } from '@/lib/proposal';
 import { photoUrl } from '@/lib/supabase';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ token: string }>;
+}): Promise<Metadata> {
+  const { token } = await params;
+  const proposal = await getProposal(token);
+
+  if (!proposal) {
+    return { title: 'Proposal not found' };
+  }
+
+  const { organization, property_address } = proposal;
+
+  return {
+    title: `${organization.name} — ${property_address}`,
+    description: `A staging proposal for ${property_address}.`,
+    robots: { index: false, follow: false },
+  };
+}
 
 export default async function ProposalPage({
   params,
