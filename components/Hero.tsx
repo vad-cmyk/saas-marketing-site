@@ -30,7 +30,7 @@ export default function Hero() {
             className="anim-fadeup mt-7 max-w-xl text-lg text-ink-soft sm:text-xl"
             style={{ animationDelay: "170ms" }}
           >
-            StagingHub is the mobile inventory and job-allocation tool built
+            Stage List is the mobile inventory and job-allocation tool built
             for property stagers. Photograph a piece once, then allocate it
             to jobs with confidence — no more promising the same sofa to two
             clients in the same week.

@@ -35,7 +35,7 @@ export default function Welcome() {
           className="anim-fadeup mt-6 text-3xl text-ink sm:text-4xl"
           style={{ animationDelay: "170ms" }}
         >
-          You&apos;re in — welcome to StagingHub
+          You&apos;re in — welcome to Stage List
         </h1>
 
         <p

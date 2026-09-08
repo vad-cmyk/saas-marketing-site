@@ -10,7 +10,7 @@ const features = [
       </svg>
     ),
     title: "Photograph your inventory once, allocate it to jobs forever.",
-    body: "Snap every sofa, lamp, and side table into StagingHub a single time. From then on, assigning it to a new listing is a few taps — no re-cataloguing, no spreadsheets.",
+    body: "Snap every sofa, lamp, and side table into Stage List a single time. From then on, assigning it to a new listing is a few taps — no re-cataloguing, no spreadsheets.",
   },
   {
     icon: (
@@ -20,7 +20,7 @@ const features = [
       </svg>
     ),
     title: "Know what's available before you promise it to a client.",
-    body: "StagingHub tracks how much of each piece is already committed elsewhere, so you can see exactly what's free — and catch a scheduling clash before it ever reaches a client.",
+    body: "Stage List tracks how much of each piece is already committed elsewhere, so you can see exactly what's free — and catch a scheduling clash before it ever reaches a client.",
   },
   {
     icon: (
@@ -42,7 +42,7 @@ export default function Features() {
       <div className="mx-auto max-w-6xl px-6 py-24 sm:px-8 sm:py-28">
         <Reveal className="max-w-2xl">
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-sage-deep">
-            What StagingHub does
+            What Stage List does
           </p>
           <h2 className="mt-4 text-3xl text-ink sm:text-4xl">
             Built around how staging businesses actually work.

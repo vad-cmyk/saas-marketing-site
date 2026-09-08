@@ -26,7 +26,7 @@ export default function ProposalNotFound() {
         </svg>
 
         <p className="accent-text mb-3 text-xs font-semibold tracking-[0.25em] uppercase">
-          Staged Ready
+          Stage List
         </p>
         <h1 className="font-display text-3xl font-medium tracking-tight text-ink italic sm:text-4xl">
           This proposal isn&rsquo;t available

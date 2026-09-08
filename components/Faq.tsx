@@ -22,7 +22,7 @@ const faqs = [
   },
   {
     q: "Is my inventory data private to my business?",
-    a: "Yes. Every staging business's inventory, jobs, and proposals are fully isolated from every other business on StagingHub.",
+    a: "Yes. Every staging business's inventory, jobs, and proposals are fully isolated from every other business on Stage List.",
   },
 ];
 

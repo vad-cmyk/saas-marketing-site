@@ -4,9 +4,12 @@ export default function Nav() {
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4 sm:px-8">
         <a
           href="#top"
-          className="font-display text-xl tracking-tight text-ink transition-transform duration-300 ease-out hover:-translate-y-0.5"
+          className="flex items-center gap-2.5 transition-transform duration-300 ease-out hover:-translate-y-0.5"
         >
-          StagingHub
+          <img src="/logo-icon.png" alt="" className="h-9 w-9" />
+          <span className="font-display text-xl tracking-tight text-ink">
+            Stage List
+          </span>
         </a>
 
         <div className="hidden items-center gap-8 text-sm text-ink-soft sm:flex">

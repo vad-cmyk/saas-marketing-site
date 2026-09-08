@@ -5,7 +5,7 @@ export default function ProposalError({ reset }: { reset: () => void }) {
     <main className="bg-grain relative flex min-h-screen items-center justify-center overflow-hidden bg-cream px-6">
       <div className="anim-fadeup relative z-10 flex max-w-md flex-col items-center text-center">
         <p className="accent-text mb-3 text-xs font-semibold tracking-[0.25em] uppercase">
-          Staged Ready
+          Stage List
         </p>
         <h1 className="font-display text-3xl font-medium tracking-tight text-ink italic sm:text-4xl">
           Something went wrong

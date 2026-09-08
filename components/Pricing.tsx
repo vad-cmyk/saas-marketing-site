@@ -39,7 +39,7 @@ export default function Pricing() {
                 <span className="pb-1.5 text-lg text-ink-soft">/ month</span>
               </div>
               <p className="mt-3 text-sm text-ink-soft">
-                Try StagingHub free for 14 days. Only add a card if you
+                Try Stage List free for 14 days. Only add a card if you
                 decide to keep going.
               </p>
 

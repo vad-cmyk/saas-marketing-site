@@ -93,7 +93,7 @@ export default function SetPassword() {
             className="anim-fadeup mx-auto mt-5 max-w-md text-balance text-lg text-ink-soft"
             style={{ animationDelay: "170ms" }}
           >
-            Choose a password for your StagingHub account, then sign in from
+            Choose a password for your Stage List account, then sign in from
             the mobile app.
           </p>
 
