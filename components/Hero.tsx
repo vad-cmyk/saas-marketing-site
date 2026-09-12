@@ -58,8 +58,8 @@ export default function Hero() {
         >
           <div className="relative rotate-[-2deg] overflow-hidden rounded-[1.75rem] border border-line bg-paper p-3 shadow-[0_30px_60px_-20px_rgba(33,28,23,0.35)] transition-transform duration-500 ease-out hover:rotate-0">
             <img
-              src="https://placehold.co/640x760/efe7d8/4a4238?text=Inventory+photo"
-              alt="Example of a staging inventory item photographed in the app"
+              src="/hero-dashboard.jpg"
+              alt="Stage List dashboard and mobile inventory checklist"
               className="w-full rounded-[1.35rem] object-cover"
             />
           </div>
