@@ -9,4 +9,4 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: '2026-08-26.dahlia',
 });
 
-export const STAGINGHUB_PRICE_ID = 'price_1UBiXO0GWnkpvsiAYzmuSwzE';
+export const STAGE_LIST_PRICE_ID = 'price_1UBiXO0GWnkpvsiAYzmuSwzE';

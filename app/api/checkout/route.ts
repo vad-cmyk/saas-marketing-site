@@ -1,6 +1,6 @@
 // app/api/checkout/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { stripe, STAGINGHUB_PRICE_ID } from '@/lib/stripe';
+import { stripe, STAGE_LIST_PRICE_ID } from '@/lib/stripe';
 
 export async function POST(request: NextRequest) {
   const { email, businessName } = await request.json();
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
 
   const session = await stripe.checkout.sessions.create({
     mode: 'subscription',
-    line_items: [{ price: STAGINGHUB_PRICE_ID, quantity: 1 }],
+    line_items: [{ price: STAGE_LIST_PRICE_ID, quantity: 1 }],
     customer_email: email,
     payment_method_collection: 'if_required',
     metadata: { business_name: businessName },
