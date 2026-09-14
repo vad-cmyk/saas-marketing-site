@@ -1,16 +1,12 @@
-import { createClient } from '@/lib/supabase/server';
+import { getMyOrganization } from '@/lib/get-my-organization';
 
 export default async function DashboardHome() {
-  const supabase = await createClient();
-  const { data } = await supabase
-    .from('memberships')
-    .select('organizations(name)')
-    .limit(1)
-    .maybeSingle();
-
-  const orgName =
-    (data?.organizations as { name: string } | null | undefined)?.name ??
-    'your business';
+  // The layout already guarantees an organization exists before rendering
+  // children (it shows a fallback UI and never renders `{children}`
+  // otherwise), so this fallback is defensive only — it should be
+  // unreachable in practice.
+  const org = await getMyOrganization();
+  const orgName = org?.name ?? 'your business';
 
   return (
     <div>
