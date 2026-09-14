@@ -22,6 +22,9 @@ export default function Nav() {
           <a href="#faq" className="link-sweep">
             FAQ
           </a>
+          <a href="/login" className="link-sweep">
+            Sign in
+          </a>
         </div>
 
         <a
