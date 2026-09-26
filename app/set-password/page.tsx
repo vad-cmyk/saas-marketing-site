@@ -76,6 +76,24 @@ export default function SetPassword() {
           >
             Download the app and sign in with your email and new password.
           </p>
+
+          <a
+            href="https://testflight.apple.com/join/vSncXcSg"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="anim-fadeup mt-7 inline-block rounded-full bg-clay px-7 py-3.5 text-base font-semibold text-paper shadow-[0_12px_30px_-10px_rgba(156,68,35,0.6)] transition-[transform,background-color,box-shadow,opacity] duration-300 ease-out hover:-translate-y-0.5 hover:bg-clay-deep hover:shadow-[0_18px_36px_-10px_rgba(156,68,35,0.7)] active:translate-y-0"
+            style={{ animationDelay: "340ms" }}
+          >
+            Get Stage List on TestFlight
+          </a>
+
+          <p
+            className="anim-fadeup mt-4 text-xs text-ink-soft/70"
+            style={{ animationDelay: "400ms" }}
+          >
+            Stage List is currently available via Apple TestFlight ahead of
+            its full App Store release.
+          </p>
         </div>
       ) : (
         <div
