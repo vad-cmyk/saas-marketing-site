@@ -26,13 +26,14 @@ export default function ItemDetailPage() {
   const router = useRouter();
   const itemId = params.id;
 
-  const { data: item, isLoading } = useItem(itemId);
+  const { data: item, isLoading, isError } = useItem(itemId);
   const { data: photos } = useItemPhotos(itemId);
   const { data: history } = useItemHistory(itemId);
   const updateItem = useUpdateItem();
   const deleteItem = useDeleteItem();
 
   const [editing, setEditing] = useState(false);
+  const [mutationError, setMutationError] = useState<string | null>(null);
   const [form, setForm] = useState({
     name: '',
     category: '',
@@ -61,31 +62,56 @@ export default function ItemDetailPage() {
 
   async function handleSaveEdits() {
     if (!item) return;
-    await updateItem.mutateAsync({
-      id: item.id,
-      patch: {
-        name: form.name.trim(),
-        category: form.category.trim(),
-        description: form.description || null,
-        colour: form.colour || null,
-        material: form.material || null,
-        condition: form.condition || null,
-        bay: form.bay || null,
-        purchase_price: form.purchase_price ? Number(form.purchase_price) : null,
-      },
-    });
-    setEditing(false);
+    setMutationError(null);
+    try {
+      await updateItem.mutateAsync({
+        id: item.id,
+        patch: {
+          name: form.name.trim(),
+          category: form.category.trim(),
+          description: form.description || null,
+          colour: form.colour || null,
+          material: form.material || null,
+          condition: form.condition || null,
+          bay: form.bay || null,
+          purchase_price: form.purchase_price ? Number(form.purchase_price) : null,
+        },
+      });
+      setEditing(false);
+    } catch (err) {
+      setMutationError(err instanceof Error ? err.message : 'Could not save changes');
+    }
   }
 
   async function handleDelete() {
     if (!item) return;
     if (!window.confirm(`Delete "${item.name}"? This can't be undone.`)) return;
-    await deleteItem.mutateAsync(item.id);
-    router.push('/dashboard/inventory');
+    setMutationError(null);
+    try {
+      await deleteItem.mutateAsync(item.id);
+      router.push('/dashboard/inventory');
+    } catch (err) {
+      setMutationError(err instanceof Error ? err.message : 'Could not delete item');
+    }
   }
 
-  if (isLoading || !item) {
+  if (isLoading) {
     return <p className="text-ink-soft">Loading…</p>;
+  }
+
+  if (isError || !item) {
+    return (
+      <div>
+        <p className="text-ink-soft">This item couldn&apos;t be found.</p>
+        <button
+          type="button"
+          onClick={() => router.push('/dashboard/inventory')}
+          className="mt-4 text-sm font-medium text-clay-deep"
+        >
+          ← Back to inventory
+        </button>
+      </div>
+    );
   }
 
   return (
@@ -138,6 +164,10 @@ export default function ItemDetailPage() {
           {editing ? 'Save' : 'Edit'}
         </button>
       </div>
+
+      {mutationError && (
+        <p className="mt-2 text-sm text-clay-deep">{mutationError}</p>
+      )}
 
       <div className="mt-5 rounded-2xl border border-line bg-paper p-4">
         {editing ? (
