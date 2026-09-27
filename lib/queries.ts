@@ -331,3 +331,40 @@ export function useDeleteItem() {
     },
   });
 }
+
+export function useProjects() {
+  return useQuery({
+    queryKey: ['projects'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('projects')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data as ProjectRow[];
+    },
+  });
+}
+
+export function useAllocateItem() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (input: { itemId: string; projectId: string; quantity?: number }) => {
+      const { data, error } = await supabase
+        .from('allocations')
+        .insert({
+          item_id: input.itemId,
+          project_id: input.projectId,
+          quantity: input.quantity ?? 1,
+        })
+        .select()
+        .single();
+      if (error) throw error;
+      return data as AllocationRow;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['items'] });
+      queryClient.invalidateQueries({ queryKey: ['item-history', data.item_id] });
+    },
+  });
+}

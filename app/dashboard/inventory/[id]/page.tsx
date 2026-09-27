@@ -10,6 +10,7 @@ import {
   useUpdateItem,
   photoUrl,
 } from '@/lib/queries';
+import AllocateItemPanel from './AllocateItemPanel';
 
 function Row({ label, value }: { label: string; value: string | null | undefined }) {
   if (!value) return null;
@@ -33,6 +34,7 @@ export default function ItemDetailPage() {
   const deleteItem = useDeleteItem();
 
   const [editing, setEditing] = useState(false);
+  const [allocateOpen, setAllocateOpen] = useState(false);
   const [mutationError, setMutationError] = useState<string | null>(null);
   const [form, setForm] = useState({
     name: '',
@@ -165,6 +167,14 @@ export default function ItemDetailPage() {
         </button>
       </div>
 
+      <button
+        type="button"
+        onClick={() => setAllocateOpen(true)}
+        className="mt-4 w-full rounded-full bg-clay py-3.5 text-base font-semibold text-paper transition-colors duration-300 ease-out hover:bg-clay-deep"
+      >
+        Add to a job
+      </button>
+
       {mutationError && (
         <p className="mt-2 text-sm text-clay-deep">{mutationError}</p>
       )}
@@ -256,6 +266,10 @@ export default function ItemDetailPage() {
       >
         Delete this piece
       </button>
+
+      {allocateOpen && (
+        <AllocateItemPanel itemId={item.id} onClose={() => setAllocateOpen(false)} />
+      )}
     </div>
   );
 }
