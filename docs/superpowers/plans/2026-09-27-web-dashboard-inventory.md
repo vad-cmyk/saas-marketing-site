@@ -17,7 +17,7 @@
 - `useDeleteItem` must remove storage objects *before* deleting the item row, best-effort (swallow storage errors), never the other way around — deleting the row first permanently orphans files in the public bucket, since the storage policy's authorization check can never pass again once the item row is gone.
 - `useSuggestItemDetails` must only fire from an explicit user action (a button click), never automatically on file selection — each call costs money.
 - No automated test runner exists in this repo. Verification is `npm run build` plus manual/Playwright browser testing against the real Supabase project and `npm run dev` locally.
-- Real test account for manual verification: email `appreview@thestagelist.com`, password `StageDemobK3jXh5PA4`. Has a real org ("Sample Staging Co") with 3 existing sample items (no photos) and a real seeded project ("12 Willow Grove, Bristol", status `confirmed`) for testing allocation. Not a real customer — created for App Store review, safe to reuse.
+- Real test account for manual verification: email `appreview@thestagelist.com`, password `<redacted from source — rotate this account's password via the Supabase dashboard>`. Has a real org ("Sample Staging Co") with 3 existing sample items (no photos) and a real seeded project ("12 Willow Grove, Bristol", status `confirmed`) for testing allocation. Not a real customer — created for App Store review, safe to reuse.
 - Visual language reuses the existing site tokens from `app/globals.css` (`--cream`, `--cream-deep`, `--ink`, `--ink-soft`, `--clay`, `--clay-deep`, `--sage`, `--line`, `--paper`) and `font-display`/`font-body`. No new colors, no new fonts.
 - No quantity-as-separate-items, no status-pill/location/sort filters beyond search + category. No Jobs section (creating/managing jobs) — only allocating an *existing* item to an *existing* job is in scope. No bulk/spreadsheet import.
 
@@ -301,7 +301,7 @@ Note: cards are plain `<div>`s here, not links — the detail route doesn't exis
 
 Run: `npm run build` — must succeed with no type errors.
 
-Run: `npm run dev`, sign in at `http://localhost:3000/login` with `appreview@thestagelist.com` / `StageDemobK3jXh5PA4`, navigate to `http://localhost:3000/dashboard/inventory`.
+Run: `npm run dev`, sign in at `http://localhost:3000/login` with `appreview@thestagelist.com` / `<redacted from source — rotate this account's password via the Supabase dashboard>`, navigate to `http://localhost:3000/dashboard/inventory`.
 Expected: the 3 real seeded items ("Linen Sofa (3-seat)", "Round Oak Coffee Table", "Ceramic Table Lamp") appear in the grid (each showing the 🛋️ fallback, since none have photos yet), with category chips for "Seating", "Tables", "Lighting". Click a category chip — confirm the grid filters to just that category. Type into the search box (e.g. "sofa") — confirm the grid filters to matching items.
 
 - [ ] **Step 7: Commit**

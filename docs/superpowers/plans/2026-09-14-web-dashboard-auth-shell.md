@@ -15,7 +15,7 @@
 - Reuses the existing `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` env vars — same names already used by `lib/supabase.ts` and already set both locally (`.env.local`) and in Vercel production. No new env vars.
 - Visual language reuses existing tokens verbatim from `app/globals.css`: `--cream` `#f6f1e7`, `--cream-deep` `#efe7d8`, `--ink` `#211c17`, `--ink-soft` `#4a4238`, `--clay` `#bc562e`, `--clay-deep` `#9c4423`, `--sage` `#55624a`, `--sage-deep` `#414b37`, `--line` `#ddd2bd`, `--paper` `#fffdf8`, and the `--font-display` (Fraunces) / `--font-body` (Public Sans) pairing already loaded in `app/layout.tsx`. No new fonts, no new colors.
 - No automated test runner exists in this repo (no test script in `package.json`). Every task's verification is either `npm run build` (catches type errors and broken imports) or manual browser verification against the real Supabase project (ref `yloqsehowpwxuuuwxdaw`) and `npm run dev` locally — consistent with how every other feature in this repo has been built and verified. Do not add a test framework as part of this plan.
-- Real test account for manual verification: email `appreview@thestagelist.com`, password `StageDemobK3jXh5PA4`. This account already has a confirmed Supabase Auth user, an organization ("Sample Staging Co"), and an owner membership — created for App Store review purposes and safe to reuse here. It is not a real customer.
+- Real test account for manual verification: email `appreview@thestagelist.com`, password `<redacted from source — rotate this account's password via the Supabase dashboard>`. This account already has a confirmed Supabase Auth user, an organization ("Sample Staging Co"), and an owner membership — created for App Store review purposes and safe to reuse here. It is not a real customer.
 - Out of scope (do not build): any real inventory/jobs/branding data views (placeholder "coming soon" pages only), sign-up/account creation on the website, changes to `/set-password`, role-based feature gating, any mobile-app changes.
 
 ---
@@ -449,7 +449,7 @@ Expected: "Invalid email or password." appears inline; the page does not redirec
 
 - [ ] **Step 3: Verify real sign-in end-to-end**
 
-On the same page, submit `appreview@thestagelist.com` / `StageDemobK3jXh5PA4` (the real demo account credentials from Global Constraints).
+On the same page, submit `appreview@thestagelist.com` / `<redacted from source — rotate this account's password via the Supabase dashboard>` (the real demo account credentials from Global Constraints).
 Expected: redirected to `/dashboard`, and — because Task 2's shell is already in place — the page now shows the real dashboard with "Welcome back, Sample Staging Co" and a working sidebar (not the fallback state from Task 2's own test, since a real session now exists).
 
 - [ ] **Step 4: Commit**
@@ -549,7 +549,7 @@ Run: `npm run dev`. Using a fresh/incognito browser window (no existing session)
 
 1. Visit `http://localhost:3000/dashboard` directly.
    Expected: redirected to `/login`.
-2. Sign in with `appreview@thestagelist.com` / `StageDemobK3jXh5PA4`.
+2. Sign in with `appreview@thestagelist.com` / `<redacted from source — rotate this account's password via the Supabase dashboard>`.
    Expected: redirected to `/dashboard`, real welcome page shown (same as Task 3's Step 3, now with middleware actively protecting the route rather than just the layout's own query happening to succeed).
 3. While still signed in, visit `http://localhost:3000/login` directly.
    Expected: redirected straight to `/dashboard` (not shown the login form).
