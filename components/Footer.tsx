@@ -6,6 +6,14 @@ export default function Footer() {
           <img src="/logo-icon.png" alt="" className="h-6 w-6" />
           Stage List
         </span>
+        <div className="flex items-center gap-5">
+          <a href="/support" className="link-sweep">
+            Support
+          </a>
+          <a href="/privacy" className="link-sweep">
+            Privacy
+          </a>
+        </div>
         <p>&copy; {new Date().getFullYear()} Stage List. All rights reserved.</p>
       </div>
     </footer>
