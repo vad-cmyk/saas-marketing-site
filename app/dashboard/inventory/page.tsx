@@ -2,10 +2,12 @@
 
 import { useState } from 'react';
 import { useCategories, useItems, photoUrl } from '@/lib/queries';
+import AddItemPanel from './AddItemPanel';
 
 export default function InventoryPage() {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState<string | undefined>(undefined);
+  const [addPanelOpen, setAddPanelOpen] = useState(false);
 
   const { data: categories } = useCategories();
   const { data: items, isLoading } = useItems({
@@ -15,7 +17,16 @@ export default function InventoryPage() {
 
   return (
     <div>
-      <h1 className="font-display text-3xl text-ink">Inventory</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="font-display text-3xl text-ink">Inventory</h1>
+        <button
+          type="button"
+          onClick={() => setAddPanelOpen(true)}
+          className="rounded-full bg-clay px-5 py-2.5 text-sm font-semibold text-paper transition-colors duration-300 ease-out hover:bg-clay-deep"
+        >
+          + Add item
+        </button>
+      </div>
 
       <input
         type="text"
@@ -91,6 +102,8 @@ export default function InventoryPage() {
           No pieces match yet. Try a different search or category.
         </p>
       )}
+
+      {addPanelOpen && <AddItemPanel onClose={() => setAddPanelOpen(false)} />}
     </div>
   );
 }
