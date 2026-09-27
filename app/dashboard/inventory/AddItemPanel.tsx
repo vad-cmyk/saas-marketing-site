@@ -11,8 +11,8 @@ import { uploadPhoto } from '@/lib/photos';
 
 export default function AddItemPanel({ onClose }: { onClose: () => void }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [photoFile, setPhotoFile] = useState<File | null>(null);
-  const [photoPreviewUrl, setPhotoPreviewUrl] = useState<string | null>(null);
+  const [photoFiles, setPhotoFiles] = useState<File[]>([]);
+  const [photoPreviewUrls, setPhotoPreviewUrls] = useState<string[]>([]);
 
   const [name, setName] = useState('');
   const [category, setCategory] = useState('');
@@ -32,17 +32,17 @@ export default function AddItemPanel({ onClose }: { onClose: () => void }) {
   const addPhoto = useAddItemPhoto();
   const suggestDetails = useSuggestItemDetails();
 
-  function handlePhotoSelected(event: React.ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    setPhotoFile(file);
-    setPhotoPreviewUrl(URL.createObjectURL(file));
+  function handlePhotosSelected(event: React.ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(event.target.files ?? []);
+    if (files.length === 0) return;
+    setPhotoFiles(files);
+    setPhotoPreviewUrls(files.map((f) => URL.createObjectURL(f)));
   }
 
   async function handleSuggestDetails() {
-    if (!photoFile) return;
+    if (photoFiles.length === 0) return;
     try {
-      const suggestion = await suggestDetails.mutateAsync(photoFile);
+      const suggestion = await suggestDetails.mutateAsync(photoFiles[0]);
       setName((prev) => prev || suggestion.name);
       setCategory((prev) => prev || suggestion.category);
       setColour((prev) => prev || suggestion.colour);
@@ -85,20 +85,22 @@ export default function AddItemPanel({ onClose }: { onClose: () => void }) {
     // duplicate-item risk this fix addresses).
     onClose();
 
-    if (photoFile) {
-      try {
-        const path = await uploadPhoto(photoFile, item.id);
-        await addPhoto.mutateAsync({
-          item_id: item.id,
-          storage_path: path,
-          sort_order: 0,
-          is_primary: true,
-        });
-      } catch (err) {
-        // Best-effort: the item already exists either way. A photo can be
-        // added later from the item's detail page (a future task). Nothing
-        // here should block or interrupt the user.
-        console.error('Could not upload photo for new item', err);
+    if (photoFiles.length > 0) {
+      for (let i = 0; i < photoFiles.length; i++) {
+        try {
+          const path = await uploadPhoto(photoFiles[i], item.id);
+          await addPhoto.mutateAsync({
+            item_id: item.id,
+            storage_path: path,
+            sort_order: i,
+            is_primary: i === 0,
+          });
+        } catch (err) {
+          // Best-effort: the item already exists either way. Nothing here
+          // should block or interrupt the user; a failed upload is only
+          // visible in the console today.
+          console.error(`Could not upload photo ${i + 1} for new item`, err);
+        }
       }
     }
   }
@@ -115,42 +117,38 @@ export default function AddItemPanel({ onClose }: { onClose: () => void }) {
           </button>
         </div>
 
-        <div className="mt-5">
-          {photoPreviewUrl ? (
+        <div className="mt-5 flex flex-wrap gap-3">
+          {photoPreviewUrls.map((url, i) => (
             // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={photoPreviewUrl}
-              alt=""
-              className="h-40 w-40 rounded-xl object-cover"
-            />
-          ) : (
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="flex h-40 w-40 items-center justify-center rounded-xl border-2 border-dashed border-line text-3xl text-ink-soft hover:text-ink"
-            >
-              +
-            </button>
-          )}
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            onChange={handlePhotoSelected}
-            className="hidden"
-          />
-          {photoPreviewUrl && (
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="mt-2 text-sm text-clay-deep"
-            >
-              Change photo
-            </button>
-          )}
+            <img key={i} src={url} alt="" className="h-40 w-40 rounded-xl object-cover" />
+          ))}
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="flex h-40 w-40 items-center justify-center rounded-xl border-2 border-dashed border-line text-3xl text-ink-soft hover:text-ink"
+          >
+            +
+          </button>
         </div>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          multiple
+          onChange={handlePhotosSelected}
+          className="hidden"
+        />
+        {photoPreviewUrls.length > 0 && (
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="mt-2 text-sm text-clay-deep"
+          >
+            Change photos
+          </button>
+        )}
 
-        {photoFile && (
+        {photoFiles.length > 0 && (
           <button
             type="button"
             onClick={handleSuggestDetails}

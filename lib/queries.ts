@@ -325,9 +325,10 @@ export function useDeleteItem() {
       const { error } = await supabase.from('items').delete().eq('id', itemId);
       if (error) throw error;
     },
-    onSuccess: () => {
+    onSuccess: (_data, itemId) => {
       queryClient.invalidateQueries({ queryKey: ['items'] });
       queryClient.invalidateQueries({ queryKey: ['categories'] });
+      queryClient.removeQueries({ queryKey: ['item', itemId] });
     },
   });
 }

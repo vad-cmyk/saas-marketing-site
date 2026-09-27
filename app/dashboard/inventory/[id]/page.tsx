@@ -48,7 +48,7 @@ export default function ItemDetailPage() {
   });
 
   useEffect(() => {
-    if (item) {
+    if (item && !editing) {
       setForm({
         name: item.name,
         category: item.category,
@@ -60,7 +60,7 @@ export default function ItemDetailPage() {
         purchase_price: item.purchase_price != null ? String(item.purchase_price) : '',
       });
     }
-  }, [item]);
+  }, [item, editing]);
 
   async function handleSaveEdits() {
     if (!item) return;
@@ -87,7 +87,13 @@ export default function ItemDetailPage() {
 
   async function handleDelete() {
     if (!item) return;
-    if (!window.confirm(`Delete "${item.name}"? This can't be undone.`)) return;
+    const hasActiveAllocation = (history ?? []).some(
+      (h) => h.status !== 'returned' && h.status !== 'dropped',
+    );
+    const confirmMessage = hasActiveAllocation
+      ? `"${item.name}" is currently allocated to a job — deleting it will also remove that job's record of it. Delete anyway?`
+      : `Delete "${item.name}"? This can't be undone.`;
+    if (!window.confirm(confirmMessage)) return;
     setMutationError(null);
     try {
       await deleteItem.mutateAsync(item.id);
@@ -259,6 +265,9 @@ export default function ItemDetailPage() {
         <p className="text-sm text-ink-soft">Not yet allocated to a job.</p>
       )}
 
+      {mutationError && (
+        <p className="mt-2 text-sm text-clay-deep">{mutationError}</p>
+      )}
       <button
         type="button"
         onClick={handleDelete}

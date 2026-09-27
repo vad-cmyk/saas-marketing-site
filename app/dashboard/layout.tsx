@@ -31,6 +31,33 @@ export default async function DashboardLayout({
     );
   }
 
+  if (org.subscription_status === 'past_due' || org.subscription_status === 'canceled') {
+    const isPastDue = org.subscription_status === 'past_due';
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-cream px-6 text-center">
+        <div>
+          <p className="font-display text-xl text-ink">
+            {isPastDue ? 'Payment needed' : 'Subscription ended'}
+          </p>
+          <p className="mt-2 max-w-sm text-sm text-ink-soft">
+            {isPastDue
+              ? "We couldn't process your last payment. Contact us to update your billing details and get back into your inventory."
+              : 'Your trial or subscription has ended. Contact us to reactivate it and keep using Stage List.'}
+          </p>
+          <a
+            href="mailto:hello@thestagelist.com"
+            className="mt-5 inline-block rounded-full bg-clay px-6 py-2.5 text-sm font-semibold text-paper"
+          >
+            Email hello@thestagelist.com
+          </a>
+          <SignOutButton className="mt-3 block text-sm font-medium text-ink-soft underline">
+            Sign out
+          </SignOutButton>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-screen flex-col sm:flex-row">
       <aside className="flex w-full shrink-0 flex-col border-b border-line bg-paper px-5 py-4 sm:w-64 sm:border-b-0 sm:border-r sm:py-6">

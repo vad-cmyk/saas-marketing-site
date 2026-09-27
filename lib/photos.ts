@@ -7,7 +7,7 @@ async function resizeAndCompress(
   maxDimension: number,
   quality: number,
 ): Promise<Blob> {
-  const bitmap = await createImageBitmap(file);
+  const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
 
   let { width, height } = bitmap;
   if (width > maxDimension || height > maxDimension) {
@@ -22,6 +22,7 @@ async function resizeAndCompress(
   const ctx = canvas.getContext('2d');
   if (!ctx) throw new Error('Could not get canvas context');
   ctx.drawImage(bitmap, 0, 0, width, height);
+  bitmap.close();
 
   return new Promise((resolve, reject) => {
     canvas.toBlob(
@@ -39,7 +40,7 @@ async function resizeAndCompress(
 // item's photos look consistent regardless of which platform added them.
 export async function uploadPhoto(file: File, itemId: string): Promise<string> {
   const blob = await resizeAndCompress(file, 1600, 0.7);
-  const path = `${itemId}/${Date.now()}.jpg`;
+  const path = `${itemId}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.jpg`;
 
   const { error } = await supabase.storage
     .from('inventory')
