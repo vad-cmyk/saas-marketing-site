@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, Public_Sans } from "next/font/google";
 import "./globals.css";
+import Providers from "./providers";
 
 const fraunces = Fraunces({
   variable: "--font-display",
@@ -32,7 +33,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <noscript>
           <style>{`.reveal{opacity:1!important;transform:none!important}`}</style>
         </noscript>
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
