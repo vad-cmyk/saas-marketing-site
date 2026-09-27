@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useCategories, useItems, photoUrl } from '@/lib/queries';
 import AddItemPanel from './AddItemPanel';
 
@@ -62,9 +63,10 @@ export default function InventoryPage() {
           {items.map((item) => {
             const isOut = item.out_qty > 0;
             return (
-              <div
+              <Link
                 key={item.id}
-                className="overflow-hidden rounded-2xl border border-line bg-paper"
+                href={`/dashboard/inventory/${item.id}`}
+                className="overflow-hidden rounded-2xl border border-line bg-paper transition-transform duration-200 ease-out hover:-translate-y-0.5"
               >
                 <div className="aspect-square w-full bg-cream-deep">
                   {item.primary_photo ? (
@@ -93,7 +95,7 @@ export default function InventoryPage() {
                     {isOut ? (item.current_jobs ?? 'Out') : (item.bay ?? 'In storage')}
                   </p>
                 </div>
-              </div>
+              </Link>
             );
           })}
         </div>
