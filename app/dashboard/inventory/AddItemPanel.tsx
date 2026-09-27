@@ -59,8 +59,9 @@ export default function AddItemPanel({ onClose }: { onClose: () => void }) {
     setSaving(true);
     setError(null);
 
+    let item;
     try {
-      const item = await createItem.mutateAsync({
+      item = await createItem.mutateAsync({
         name: name.trim(),
         category: category.trim(),
         description: description || null,
@@ -71,8 +72,21 @@ export default function AddItemPanel({ onClose }: { onClose: () => void }) {
         bay: bay || null,
         purchase_price: purchasePrice ? Number(purchasePrice) : null,
       });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not save item');
+      setSaving(false);
+      return;
+    }
 
-      if (photoFile) {
+    // The item row is saved — close the panel now rather than waiting on the
+    // photo upload. A slow or failed photo upload must never block the user
+    // from moving on, and must never look like the whole save failed when
+    // the item itself was already created (that's exactly what caused the
+    // duplicate-item risk this fix addresses).
+    onClose();
+
+    if (photoFile) {
+      try {
         const path = await uploadPhoto(photoFile, item.id);
         await addPhoto.mutateAsync({
           item_id: item.id,
@@ -80,13 +94,12 @@ export default function AddItemPanel({ onClose }: { onClose: () => void }) {
           sort_order: 0,
           is_primary: true,
         });
+      } catch (err) {
+        // Best-effort: the item already exists either way. A photo can be
+        // added later from the item's detail page (a future task). Nothing
+        // here should block or interrupt the user.
+        console.error('Could not upload photo for new item', err);
       }
-
-      onClose();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Could not save item');
-    } finally {
-      setSaving(false);
     }
   }
 
