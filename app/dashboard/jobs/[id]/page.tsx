@@ -41,7 +41,7 @@ export default function JobDetailPage() {
   const projectId = params.id;
 
   const { data: project, isLoading, isError } = useProject(projectId);
-  const { data: allocations } = useProjectAllocations(projectId);
+  const { data: allocations, isError: allocationsError } = useProjectAllocations(projectId);
   const updateProjectStatus = useUpdateProjectStatus();
   const updateAllocationStatus = useUpdateAllocationStatus();
   const { data: clashes } = useProjectClashes(projectId);
@@ -85,10 +85,15 @@ export default function JobDetailPage() {
 
   async function handleCopyShareLink() {
     if (!project) return;
-    const url = `${window.location.origin}/proposal/${project.share_token}`;
-    await navigator.clipboard.writeText(url);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setMutationError(null);
+    try {
+      const url = `${window.location.origin}/proposal/${project.share_token}`;
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      setMutationError(err instanceof Error ? err.message : 'Could not copy the share link');
+    }
   }
 
   async function handleCheckIn() {
@@ -110,8 +115,9 @@ export default function JobDetailPage() {
   async function handleDelete() {
     if (!project) return;
     const count = (allocations ?? []).length;
-    const confirmMessage =
-      count > 0
+    const confirmMessage = allocationsError
+      ? `Could not confirm whether "${project.property_address}" has any allocated items — it may. Delete anyway? This can't be undone.`
+      : count > 0
         ? `"${project.property_address}" and its ${count} allocated ${count === 1 ? 'item record' : 'item records'} will be permanently removed. This can't be undone.`
         : `"${project.property_address}" will be permanently removed. This can't be undone.`;
     if (!window.confirm(confirmMessage)) return;
@@ -222,7 +228,9 @@ export default function JobDetailPage() {
         Allocated items {allocations ? `(${allocations.length})` : ''}
       </h2>
 
-      {allocations && allocations.length > 0 ? (
+      {allocationsError ? (
+        <p className="text-sm text-clay-deep">Couldn&apos;t load this job&apos;s allocated items.</p>
+      ) : allocations && allocations.length > 0 ? (
         <div className="space-y-2">
           {allocations.map((a) => {
             const nextAllocStatus = NEXT_ALLOCATION_STATUS[a.status];
@@ -272,6 +280,10 @@ export default function JobDetailPage() {
         </div>
       ) : (
         <p className="text-sm text-ink-soft">No items allocated yet. Add pieces from Inventory.</p>
+      )}
+
+      {mutationError && (
+        <p className="mt-2 text-sm text-clay-deep">{mutationError}</p>
       )}
 
       <button

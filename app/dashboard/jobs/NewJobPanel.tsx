@@ -77,15 +77,15 @@ export default function NewJobPanel({ onClose }: { onClose: () => void }) {
           />
           <div className="flex gap-3">
             <input
-              type="text"
-              placeholder="Stage date (YYYY-MM-DD)"
+              type="date"
+              placeholder="Stage date"
               value={stageDate}
               onChange={(e) => setStageDate(e.target.value)}
               className="w-1/2 rounded-xl border border-line bg-paper px-4 py-3 text-sm text-ink"
             />
             <input
-              type="text"
-              placeholder="Collect date (YYYY-MM-DD)"
+              type="date"
+              placeholder="Collect date"
               value={collectDate}
               onChange={(e) => setCollectDate(e.target.value)}
               className="w-1/2 rounded-xl border border-line bg-paper px-4 py-3 text-sm text-ink"
