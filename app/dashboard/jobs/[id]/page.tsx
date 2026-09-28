@@ -5,6 +5,9 @@ import { useParams, useRouter } from 'next/navigation';
 import {
   useProject,
   useProjectAllocations,
+  useProjectClashes,
+  useCheckInJob,
+  useDeleteProject,
   useUpdateProjectStatus,
   useUpdateAllocationStatus,
   photoUrl,
@@ -41,6 +44,10 @@ export default function JobDetailPage() {
   const { data: allocations } = useProjectAllocations(projectId);
   const updateProjectStatus = useUpdateProjectStatus();
   const updateAllocationStatus = useUpdateAllocationStatus();
+  const { data: clashes } = useProjectClashes(projectId);
+  const checkInJob = useCheckInJob();
+  const deleteProject = useDeleteProject();
+  const [copied, setCopied] = useState(false);
 
   const [mutationError, setMutationError] = useState<string | null>(null);
 
@@ -73,6 +80,47 @@ export default function JobDetailPage() {
       await updateAllocationStatus.mutateAsync({ id: allocationId, status: next });
     } catch (err) {
       setMutationError(err instanceof Error ? err.message : 'Could not update item status');
+    }
+  }
+
+  async function handleCopyShareLink() {
+    if (!project) return;
+    const url = `${window.location.origin}/proposal/${project.share_token}`;
+    await navigator.clipboard.writeText(url);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
+
+  async function handleCheckIn() {
+    if (!project) return;
+    const outCount = (allocations ?? []).filter((a) => a.status === 'out').length;
+    const message =
+      outCount > 0
+        ? `Mark all ${outCount} out ${outCount === 1 ? 'item' : 'items'} as returned and close this job?`
+        : 'Close this job as collected?';
+    if (!window.confirm(message)) return;
+    setMutationError(null);
+    try {
+      await checkInJob.mutateAsync(project.id);
+    } catch (err) {
+      setMutationError(err instanceof Error ? err.message : 'Could not check in job');
+    }
+  }
+
+  async function handleDelete() {
+    if (!project) return;
+    const count = (allocations ?? []).length;
+    const confirmMessage =
+      count > 0
+        ? `"${project.property_address}" and its ${count} allocated ${count === 1 ? 'item record' : 'item records'} will be permanently removed. This can't be undone.`
+        : `"${project.property_address}" will be permanently removed. This can't be undone.`;
+    if (!window.confirm(confirmMessage)) return;
+    setMutationError(null);
+    try {
+      await deleteProject.mutateAsync(project.id);
+      router.push('/dashboard/jobs');
+    } catch (err) {
+      setMutationError(err instanceof Error ? err.message : 'Could not delete job');
     }
   }
 
@@ -117,7 +165,26 @@ export default function JobDetailPage() {
         {collect ? ` → ${collect}` : ''}
       </p>
 
+      {clashes && clashes.length > 0 && (
+        <div className="mt-4 rounded-2xl border border-clay bg-cream-deep p-3.5">
+          <p className="mb-1 text-sm font-semibold text-clay-deep">Availability clash</p>
+          {clashes.map((c) => (
+            <p key={c.item_id} className="text-xs leading-relaxed text-clay-deep">
+              {c.item_name}: needs {c.wanted}, {c.free} free
+              {c.clashes_with ? ` — also held by ${c.clashes_with}` : ''}
+            </p>
+          ))}
+        </div>
+      )}
+
       <div className="mt-4 flex flex-wrap gap-2">
+        <button
+          type="button"
+          onClick={handleCopyShareLink}
+          className="rounded-full border border-line bg-paper px-4 py-2.5 text-sm font-medium text-ink-soft hover:text-ink"
+        >
+          {copied ? 'Copied!' : 'Send to client'}
+        </button>
         {nextStatus && (
           <button
             type="button"
@@ -126,6 +193,16 @@ export default function JobDetailPage() {
             className="rounded-full bg-clay px-4 py-2.5 text-sm font-medium capitalize text-paper transition-colors duration-300 ease-out hover:bg-clay-deep disabled:opacity-60"
           >
             Mark {nextStatus}
+          </button>
+        )}
+        {project.status === 'staged' && (
+          <button
+            type="button"
+            onClick={handleCheckIn}
+            disabled={checkInJob.isPending}
+            className="rounded-full bg-sage px-4 py-2.5 text-sm font-medium text-paper transition-colors duration-300 ease-out hover:bg-sage-deep disabled:opacity-60"
+          >
+            Check in job
           </button>
         )}
         {project.status !== 'collected' && project.status !== 'cancelled' && (
@@ -196,6 +273,14 @@ export default function JobDetailPage() {
       ) : (
         <p className="text-sm text-ink-soft">No items allocated yet. Add pieces from Inventory.</p>
       )}
+
+      <button
+        type="button"
+        onClick={handleDelete}
+        className="mt-8 text-sm font-medium text-clay-deep"
+      >
+        Delete this job
+      </button>
     </div>
   );
 }

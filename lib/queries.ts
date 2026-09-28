@@ -484,3 +484,67 @@ export function useAllocateItem() {
     },
   });
 }
+
+export function useProjectClashes(projectId: string | undefined) {
+  return useQuery({
+    queryKey: ['project-clashes', projectId],
+    enabled: !!projectId,
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('project_clashes', {
+        p_project: projectId as string,
+      });
+      if (error) throw error;
+      return data as {
+        item_id: string;
+        item_name: string;
+        wanted: number;
+        free: number;
+        clashes_with: string | null;
+      }[];
+    },
+  });
+}
+
+export function useCheckInJob() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (projectId: string) => {
+      const returnedAt = new Date().toISOString();
+      const { data, error } = await supabase
+        .from('allocations')
+        .update({ status: 'returned', returned_at: returnedAt })
+        .eq('project_id', projectId)
+        .eq('status', 'out')
+        .select();
+      if (error) throw error;
+
+      const { error: statusError } = await supabase
+        .from('projects')
+        .update({ status: 'collected' })
+        .eq('id', projectId);
+      if (statusError) throw statusError;
+
+      return data as AllocationRow[];
+    },
+    onSuccess: (_data, projectId) => {
+      queryClient.invalidateQueries({ queryKey: ['project-allocations', projectId] });
+      queryClient.invalidateQueries({ queryKey: ['project', projectId] });
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+      queryClient.invalidateQueries({ queryKey: ['items'] });
+    },
+  });
+}
+
+export function useDeleteProject() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (projectId: string) => {
+      const { error } = await supabase.from('projects').delete().eq('id', projectId);
+      if (error) throw error;
+    },
+    onSuccess: (_data, projectId) => {
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+      queryClient.removeQueries({ queryKey: ['project', projectId] });
+    },
+  });
+}
