@@ -1,7 +1,8 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useProjects, type ProjectRow } from '@/lib/queries';
+import NewJobPanel from './NewJobPanel';
 
 const STATUS_ORDER: ProjectRow['status'][] = [
   'staged',
@@ -26,6 +27,7 @@ function formatDate(date: string | null) {
 
 export default function JobsPage() {
   const { data: projects, isLoading } = useProjects();
+  const [newJobOpen, setNewJobOpen] = useState(false);
 
   const sections = useMemo(() => {
     if (!projects) return [];
@@ -38,7 +40,16 @@ export default function JobsPage() {
 
   return (
     <div>
-      <h1 className="font-display text-3xl text-ink">Jobs</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="font-display text-3xl text-ink">Jobs</h1>
+        <button
+          type="button"
+          onClick={() => setNewJobOpen(true)}
+          className="rounded-full bg-clay px-5 py-2.5 text-sm font-semibold text-paper transition-colors duration-300 ease-out hover:bg-clay-deep"
+        >
+          + New job
+        </button>
+      </div>
 
       {isLoading ? (
         <p className="mt-8 text-ink-soft">Loading…</p>
@@ -78,6 +89,8 @@ export default function JobsPage() {
       ) : (
         <p className="mt-8 text-ink-soft">No jobs yet.</p>
       )}
+
+      {newJobOpen && <NewJobPanel onClose={() => setNewJobOpen(false)} />}
     </div>
   );
 }

@@ -347,6 +347,34 @@ export function useProjects() {
   });
 }
 
+export interface ProjectInsert {
+  property_address: string;
+  client_name?: string | null;
+  client_email?: string | null;
+  status?: ProjectRow['status'];
+  stage_date?: string | null;
+  collect_date?: string | null;
+  notes?: string | null;
+}
+
+export function useCreateProject() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (project: ProjectInsert) => {
+      const { data, error } = await supabase
+        .from('projects')
+        .insert(project)
+        .select()
+        .single();
+      if (error) throw error;
+      return data as ProjectRow;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+    },
+  });
+}
+
 export function useAllocateItem() {
   const queryClient = useQueryClient();
   return useMutation({
