@@ -339,10 +339,10 @@ export function useProjects() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('projects')
-        .select('*')
+        .select('*, allocations(count)')
         .order('created_at', { ascending: false });
       if (error) throw error;
-      return data as ProjectRow[];
+      return data as (ProjectRow & { allocations: { count: number }[] })[];
     },
   });
 }
