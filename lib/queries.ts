@@ -375,6 +375,91 @@ export function useCreateProject() {
   });
 }
 
+export function useProject(projectId: string | undefined) {
+  return useQuery({
+    queryKey: ['project', projectId],
+    enabled: !!projectId,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('projects')
+        .select('*')
+        .eq('id', projectId as string)
+        .single();
+      if (error) throw error;
+      return data as ProjectRow;
+    },
+  });
+}
+
+export function useProjectAllocations(projectId: string | undefined) {
+  return useQuery({
+    queryKey: ['project-allocations', projectId],
+    enabled: !!projectId,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('allocations')
+        .select('*, items(*, item_photos(storage_path, is_primary, sort_order))')
+        .eq('project_id', projectId as string)
+        .neq('status', 'dropped')
+        .order('created_at', { ascending: true });
+      if (error) throw error;
+      return data as (AllocationRow & {
+        items: ItemRow & { item_photos: PhotoRow[] };
+      })[];
+    },
+  });
+}
+
+export function useUpdateProjectStatus() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: ProjectRow['status'] }) => {
+      const { data, error } = await supabase
+        .from('projects')
+        .update({ status })
+        .eq('id', id)
+        .select()
+        .single();
+      if (error) throw error;
+      return data as ProjectRow;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+      queryClient.invalidateQueries({ queryKey: ['project', data.id] });
+    },
+  });
+}
+
+export function useUpdateAllocationStatus() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: AllocationRow['status'] }) => {
+      const patch: {
+        status: AllocationRow['status'];
+        checked_out_at?: string;
+        returned_at?: string;
+      } = { status };
+      if (status === 'out') patch.checked_out_at = new Date().toISOString();
+      if (status === 'returned') patch.returned_at = new Date().toISOString();
+
+      const { data, error } = await supabase
+        .from('allocations')
+        .update(patch)
+        .eq('id', id)
+        .select()
+        .single();
+      if (error) throw error;
+      return data as AllocationRow;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['project-allocations', data.project_id] });
+      queryClient.invalidateQueries({ queryKey: ['project-clashes', data.project_id] });
+      queryClient.invalidateQueries({ queryKey: ['items'] });
+      queryClient.invalidateQueries({ queryKey: ['item-history', data.item_id] });
+    },
+  });
+}
+
 export function useAllocateItem() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -394,6 +479,8 @@ export function useAllocateItem() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['items'] });
       queryClient.invalidateQueries({ queryKey: ['item-history', data.item_id] });
+      queryClient.invalidateQueries({ queryKey: ['project-allocations', data.project_id] });
+      queryClient.invalidateQueries({ queryKey: ['project-clashes', data.project_id] });
     },
   });
 }

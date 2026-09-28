@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import Link from 'next/link';
 import { useProjects, type ProjectRow } from '@/lib/queries';
 import NewJobPanel from './NewJobPanel';
 
@@ -66,7 +67,11 @@ export default function JobsPage() {
                   const stage = formatDate(job.stage_date);
                   const collect = formatDate(job.collect_date);
                   return (
-                    <div key={job.id} className="rounded-2xl border border-line bg-paper p-4">
+                    <Link
+                      key={job.id}
+                      href={`/dashboard/jobs/${job.id}`}
+                      className="block rounded-2xl border border-line bg-paper p-4 transition-transform duration-200 ease-out hover:-translate-y-0.5"
+                    >
                       <p className="text-sm font-semibold text-ink">{job.property_address}</p>
                       {job.client_name && (
                         <p className="mt-0.5 text-sm text-ink-soft">{job.client_name}</p>
@@ -79,7 +84,7 @@ export default function JobsPage() {
                           {count} {count === 1 ? 'item' : 'items'}
                         </span>
                       </div>
-                    </div>
+                    </Link>
                   );
                 })}
               </div>
