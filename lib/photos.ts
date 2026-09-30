@@ -6,6 +6,7 @@ async function resizeAndCompress(
   file: File,
   maxDimension: number,
   quality: number,
+  format: 'image/jpeg' | 'image/png' = 'image/jpeg',
 ): Promise<Blob> {
   const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
 
@@ -30,7 +31,7 @@ async function resizeAndCompress(
         if (blob) resolve(blob);
         else reject(new Error('Could not create image blob'));
       },
-      'image/jpeg',
+      format,
       quality,
     );
   });
@@ -68,4 +69,20 @@ export async function getPhotoBase64ForSuggestion(file: File): Promise<string> {
     reader.onerror = () => reject(reader.error);
     reader.readAsDataURL(blob);
   });
+}
+
+// Matches the mobile app's logo output (400px wide, PNG, quality 0.8) —
+// PNG specifically, not JPEG: logos are routinely uploaded with a
+// transparent background, and JPEG would flatten that to solid white or
+// black.
+export async function uploadLogo(file: File, orgId: string): Promise<string> {
+  const blob = await resizeAndCompress(file, 400, 0.8, 'image/png');
+  const path = `org-logos/${orgId}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.png`;
+
+  const { error } = await supabase.storage
+    .from('inventory')
+    .upload(path, blob, { contentType: 'image/png' });
+
+  if (error) throw error;
+  return path;
 }

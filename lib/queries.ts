@@ -548,3 +548,59 @@ export function useDeleteProject() {
     },
   });
 }
+
+export interface MyOrganization {
+  id: string;
+  name: string;
+  subscription_status: string;
+  trial_ends_at: string | null;
+  logo_url: string | null;
+  brand_color: string | null;
+  contact_email: string | null;
+  contact_phone: string | null;
+  my_role: string;
+}
+
+export function useMyOrganization() {
+  return useQuery({
+    queryKey: ['my-organization'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('memberships')
+        .select(
+          'role, organizations(id, name, subscription_status, trial_ends_at, logo_url, brand_color, contact_email, contact_phone)',
+        )
+        .limit(1)
+        .maybeSingle();
+      if (error) throw error;
+      if (!data?.organizations) return null;
+      return { ...data.organizations, my_role: data.role } as unknown as MyOrganization;
+    },
+  });
+}
+
+export interface OrganizationBrandingUpdate {
+  logo_url?: string | null;
+  brand_color?: string | null;
+  contact_email?: string | null;
+  contact_phone?: string | null;
+}
+
+export function useUpdateOrganizationBranding() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      orgId,
+      updates,
+    }: {
+      orgId: string;
+      updates: OrganizationBrandingUpdate;
+    }) => {
+      const { error } = await supabase.from('organizations').update(updates).eq('id', orgId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['my-organization'] });
+    },
+  });
+}
