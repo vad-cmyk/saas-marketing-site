@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 import { createClient } from '@/lib/supabase/client';
 
 export default function SignOutButton({
@@ -12,6 +13,7 @@ export default function SignOutButton({
   className?: string;
 }) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [isSigningOut, setIsSigningOut] = useState(false);
 
   async function handleSignOut() {
@@ -33,6 +35,14 @@ export default function SignOutButton({
         // below; the middleware will re-check the session on /login.
       }
     }
+
+    // The QueryClient is a single instance for the whole SPA session
+    // (app/providers.tsx) and nothing else clears it — without this, a
+    // different account signing in in the same tab could see this
+    // account's cached data (e.g. useMyOrganization) synchronously
+    // before its own fetch resolves, and a seed-once form could persist
+    // that stale data as a genuine write to the new account's own row.
+    queryClient.clear();
 
     router.push('/login');
     router.refresh();

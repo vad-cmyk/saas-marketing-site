@@ -71,10 +71,13 @@ export async function getPhotoBase64ForSuggestion(file: File): Promise<string> {
   });
 }
 
-// Matches the mobile app's logo output (400px wide, PNG, quality 0.8) —
-// PNG specifically, not JPEG: logos are routinely uploaded with a
+// Matches the mobile app's logo output (400px wide, PNG) — PNG
+// specifically, not JPEG: logos are routinely uploaded with a
 // transparent background, and JPEG would flatten that to solid white or
-// black.
+// black. The quality argument passed below has no effect here —
+// canvas.toBlob() ignores it for PNG output, which is always lossless —
+// kept only so the call shape matches the app's (equally inert)
+// compress: 0.8 parameter.
 export async function uploadLogo(file: File, orgId: string): Promise<string> {
   const blob = await resizeAndCompress(file, 400, 0.8, 'image/png');
   const path = `org-logos/${orgId}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.png`;
