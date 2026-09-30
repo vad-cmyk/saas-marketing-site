@@ -17,6 +17,7 @@ export default function NewJobPanel({ onClose }: { onClose: () => void }) {
   const [stageDate, setStageDate] = useState('');
   const [collectDate, setCollectDate] = useState('');
   const [notes, setNotes] = useState('');
+  const [status, setStatus] = useState<'proposal' | 'confirmed'>('confirmed');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -34,7 +35,7 @@ export default function NewJobPanel({ onClose }: { onClose: () => void }) {
         stage_date: toIsoDate(stageDate),
         collect_date: toIsoDate(collectDate),
         notes: notes || null,
-        status: 'confirmed',
+        status,
       });
       onClose();
     } catch (err) {
@@ -97,6 +98,36 @@ export default function NewJobPanel({ onClose }: { onClose: () => void }) {
             onChange={(e) => setNotes(e.target.value)}
             className="w-full rounded-xl border border-line bg-paper px-4 py-3 text-sm text-ink"
           />
+        </div>
+
+        <div className="mt-4">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink-soft">
+            Save as
+          </p>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => setStatus('proposal')}
+              className={`flex-1 rounded-xl border py-3 text-sm font-medium transition-colors duration-200 ease-out ${
+                status === 'proposal'
+                  ? 'border-clay bg-clay text-paper'
+                  : 'border-line bg-paper text-ink-soft hover:text-ink'
+              }`}
+            >
+              Proposal
+            </button>
+            <button
+              type="button"
+              onClick={() => setStatus('confirmed')}
+              className={`flex-1 rounded-xl border py-3 text-sm font-medium transition-colors duration-200 ease-out ${
+                status === 'confirmed'
+                  ? 'border-clay bg-clay text-paper'
+                  : 'border-line bg-paper text-ink-soft hover:text-ink'
+              }`}
+            >
+              Confirmed
+            </button>
+          </div>
         </div>
 
         <button
