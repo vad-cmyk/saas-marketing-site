@@ -7,7 +7,7 @@ import { uploadLogo } from '@/lib/photos';
 const HEX_COLOR_RE = /^#[0-9a-fA-F]{6}$/;
 
 export default function BrandingPage() {
-  const { data: org, isLoading } = useMyOrganization();
+  const { data: org, isLoading, isError } = useMyOrganization();
   const updateBranding = useUpdateOrganizationBranding();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -73,11 +73,11 @@ export default function BrandingPage() {
     }
   }
 
-  if (isLoading || !seeded) {
+  if (isLoading || (org && !seeded)) {
     return <p className="text-ink-soft">Loading…</p>;
   }
 
-  if (!org) {
+  if (isError || !org) {
     return <p className="text-ink-soft">We couldn&apos;t load your organization.</p>;
   }
 
