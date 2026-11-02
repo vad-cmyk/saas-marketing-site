@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { track } from "@vercel/analytics";
 
 // [TODO VAD: App Store URL once approved]
 const APP_STORE_URL: string | null = null;
@@ -59,6 +60,7 @@ function AndroidInterestForm() {
       // Intentionally swallow — we show a confirmation regardless, there's
       // no user-facing action to take if this fails.
     }
+    track("android_interest_submitted");
     setStatus("done");
   }
 

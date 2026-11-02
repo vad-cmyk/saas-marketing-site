@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { track } from "@vercel/analytics";
 
 type Status = "idle" | "submitting" | "error";
 
@@ -57,6 +58,7 @@ export default function SignupForm() {
         );
       }
 
+      track("trial_signup_started");
       window.location.href = data.url;
     } catch (err) {
       setStatus("error");
