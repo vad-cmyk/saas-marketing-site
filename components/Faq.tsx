@@ -24,6 +24,14 @@ const faqs = [
     q: "Is my inventory data private to my business?",
     a: "Yes. Every staging business's inventory, jobs, and proposals are fully isolated from every other business on Stage List.",
   },
+  {
+    q: "Is this like Stageforce?",
+    a: "No. Stageforce is an all-in-one platform for warehouse-scale staging companies, priced in dollars from $49/month plus a platform fee, built around RFID scanning. Stage List does one job — know what you've got, where it is, and show the client — for stagers running from a single unit, for £29/month flat.",
+  },
+  {
+    q: "Does a proposal include pricing or signatures?",
+    a: "No. A Stage List proposal is a visual selection: the pieces you've allocated to a property, with photos, that the client can view as a link or PDF. Quoting and contracts stay in whatever you use today.",
+  },
 ];
 
 function FaqItem({
