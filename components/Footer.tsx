@@ -16,6 +16,12 @@ export default function Footer() {
         </div>
         <p>&copy; {new Date().getFullYear()} Stage List. All rights reserved.</p>
       </div>
+      <div className="mx-auto max-w-6xl px-6 pb-10 text-xs text-ink-soft/80 sm:px-8">
+        <p>
+          [TODO VAD: confirm wording] Built in Norfolk by Vad, whose wife runs a
+          staging business from a single unit.
+        </p>
+      </div>
     </footer>
   );
 }
