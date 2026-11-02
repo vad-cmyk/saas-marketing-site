@@ -10,11 +10,11 @@ const ANSWER_TRANSITION_MS = 300;
 const faqs = [
   {
     q: "Do I need a credit card to start?",
-    a: "No — only if you continue past the 14-day trial. You can try the full product first and decide afterwards.",
+    a: "No — only if you continue past the 30-day trial. You can try the full product first and decide afterwards.",
   },
   {
     q: "What happens if I don't add a card?",
-    a: "Your trial ends automatically at the end of the 14 days. No charge, no surprise, nothing further required from you.",
+    a: "Your trial ends automatically at the end of the 30 days. No charge, no surprise, nothing further required from you.",
   },
   {
     q: "Can I cancel anytime?",

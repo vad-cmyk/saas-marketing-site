@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 const faqs = [
   {
     q: "How do I get started?",
-    a: "Sign up for a 14-day free trial at thestagelist.com — no card required. You'll receive an email to set your password, then you can sign in from the mobile app or the website.",
+    a: "Sign up for a 30-day free trial at thestagelist.com — no card required. You'll receive an email to set your password, then you can sign in from the mobile app or the website.",
   },
   {
     q: "I didn't get my invite or password reset email.",

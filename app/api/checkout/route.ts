@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     payment_method_collection: 'if_required',
     metadata: { business_name: businessName },
     subscription_data: {
-      trial_period_days: 14,
+      trial_period_days: 30,
       trial_settings: {
         end_behavior: { missing_payment_method: 'cancel' },
       },

@@ -20,7 +20,7 @@ const publicSans = Public_Sans({
 export const metadata: Metadata = {
   title: "Stage List — Inventory & job allocation for property stagers",
   description:
-    "Photograph your staging inventory once, allocate it to jobs forever. Know what's available before you promise it to a client. £20/month, 14-day free trial, no card required.",
+    "Photograph your staging inventory once, allocate it to jobs forever. Know what's available before you promise it to a client. £29/month, 30-day free trial, no card required.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

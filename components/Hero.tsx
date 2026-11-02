@@ -47,7 +47,7 @@ export default function Hero() {
               Start your free trial
             </a>
             <span className="text-sm text-ink-soft">
-              14-day free trial · No card required to start
+              30-day free trial · No card required to start
             </span>
           </div>
         </div>

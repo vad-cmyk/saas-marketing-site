@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Reveal from "./Reveal";
 import SignupForm from "./SignupForm";
 
@@ -6,9 +9,14 @@ const included = [
   "Job allocation with real-time availability checks",
   "Shareable client proposals",
   "Unlimited staff logins for your business",
+  "Works on iPhone and in any browser",
 ];
 
+type Cycle = "monthly" | "yearly";
+
 export default function Pricing() {
+  const [cycle, setCycle] = useState<Cycle>("monthly");
+
   return (
     <section id="pricing" className="border-b border-line/70">
       <div className="mx-auto max-w-6xl px-6 py-24 sm:px-8 sm:py-28">
@@ -31,17 +39,57 @@ export default function Pricing() {
           >
             <div className="relative z-10">
               <p className="inline-flex items-center gap-2 rounded-full border border-sage/30 bg-sage/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.1em] text-sage-deep">
-                14-day free trial · No card required to start
+                30-day free trial · No card required to start
               </p>
 
-              <div className="mt-8 flex items-end justify-center gap-2">
-                <span className="font-display text-6xl leading-none text-ink">£20</span>
-                <span className="pb-1.5 text-lg text-ink-soft">/ month</span>
+              <div className="mt-6 inline-flex items-center gap-1 rounded-full border border-line bg-cream-deep/60 p-1 text-sm">
+                <button
+                  type="button"
+                  onClick={() => setCycle("monthly")}
+                  aria-pressed={cycle === "monthly"}
+                  className={`rounded-full px-4 py-1.5 font-semibold transition-colors duration-300 ease-out ${
+                    cycle === "monthly"
+                      ? "bg-clay text-paper"
+                      : "text-ink-soft hover:text-ink"
+                  }`}
+                >
+                  Monthly
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCycle("yearly")}
+                  aria-pressed={cycle === "yearly"}
+                  className={`rounded-full px-4 py-1.5 font-semibold transition-colors duration-300 ease-out ${
+                    cycle === "yearly"
+                      ? "bg-clay text-paper"
+                      : "text-ink-soft hover:text-ink"
+                  }`}
+                >
+                  Yearly
+                </button>
               </div>
+
+              <div className="mt-6 flex items-end justify-center gap-2">
+                <span className="font-display text-6xl leading-none text-ink">
+                  {cycle === "monthly" ? "£29" : "£290"}
+                </span>
+                <span className="pb-1.5 text-lg text-ink-soft">
+                  {cycle === "monthly" ? "/ month" : "/ year"}
+                </span>
+              </div>
+              {cycle === "yearly" && (
+                <p className="mt-1 text-sm text-sage-deep">Two months free</p>
+              )}
               <p className="mt-3 text-sm text-ink-soft">
-                Try Stage List free for 14 days. Only add a card if you
+                Try Stage List free for 30 days. Only add a card if you
                 decide to keep going.
               </p>
+
+              <p className="mt-5 inline-flex items-center gap-2 rounded-full bg-sage px-4 py-1.5 text-center text-xs font-semibold text-paper">
+                Founding stagers: £19/month, locked for life. First 20
+                businesses.
+              </p>
+              <p className="mt-1.5 text-xs text-ink-soft">Limited to 20.</p>
 
               <ul className="mt-8 space-y-3 text-left">
                 {included.map((item) => (
