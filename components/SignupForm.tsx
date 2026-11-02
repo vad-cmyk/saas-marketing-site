@@ -7,11 +7,34 @@ type Status = "idle" | "submitting" | "error";
 export default function SignupForm() {
   const [businessName, setBusinessName] = useState("");
   const [email, setEmail] = useState("");
+  const [website, setWebsite] = useState(""); // honeypot — real users never fill this in
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    // Honeypot: if this hidden field is filled, it's almost certainly a bot.
+    // Silently no-op — no API call, no error shown.
+    if (website.trim()) {
+      return;
+    }
+
+    const trimmedBusinessName = businessName.trim();
+    const trimmedEmail = email.trim();
+
+    if (!trimmedBusinessName) {
+      setStatus("error");
+      setError("Please enter your business name.");
+      return;
+    }
+
+    if (!trimmedEmail) {
+      setStatus("error");
+      setError("Please enter your work email.");
+      return;
+    }
+
     setStatus("submitting");
     setError(null);
 
@@ -19,7 +42,11 @@ export default function SignupForm() {
       const response = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, businessName }),
+        body: JSON.stringify({
+          email: trimmedEmail,
+          businessName: trimmedBusinessName,
+          website,
+        }),
       });
 
       const data = await response.json();
@@ -76,6 +103,21 @@ export default function SignupForm() {
           onChange={(event) => setEmail(event.target.value)}
           disabled={isSubmitting}
           className="w-full rounded-full border border-line bg-paper px-5 py-3 text-sm text-ink placeholder:text-ink-soft/60 transition-[border-color,box-shadow] duration-300 ease-out focus-visible:border-clay disabled:opacity-60"
+        />
+      </div>
+
+      {/* Honeypot field — hidden from real users, off-canvas rather than
+          display:none so bots that skip display:none still fill it in. */}
+      <div className="absolute -left-[9999px] top-auto h-0 w-0 overflow-hidden" aria-hidden="true">
+        <label htmlFor="website">Website</label>
+        <input
+          id="website"
+          name="website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          value={website}
+          onChange={(event) => setWebsite(event.target.value)}
         />
       </div>
 

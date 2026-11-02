@@ -3,7 +3,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import { stripe, STAGE_LIST_PRICE_ID } from '@/lib/stripe';
 
 export async function POST(request: NextRequest) {
-  const { email, businessName } = await request.json();
+  const { email, businessName, website } = await request.json();
+
+  // Defense in depth: the signup form's client-side honeypot field should
+  // already stop bots before this request is sent, but don't trust the
+  // client alone — reject here too if it's somehow present and filled.
+  if (typeof website === 'string' && website.trim()) {
+    return NextResponse.json(
+      { error: 'email and businessName are required' },
+      { status: 400 },
+    );
+  }
 
   if (!email || !businessName) {
     return NextResponse.json(
