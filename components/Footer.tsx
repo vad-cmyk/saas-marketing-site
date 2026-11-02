@@ -13,11 +13,17 @@ export default function Footer() {
           <a href="/compare/stageforce" className="link-sweep">
             Compare
           </a>
+          <a href="/terms" className="link-sweep">
+            Terms
+          </a>
           <a href="/privacy" className="link-sweep">
             Privacy
           </a>
         </div>
-        <p>&copy; {new Date().getFullYear()} Stage List. All rights reserved.</p>
+        <p>
+          &copy; {new Date().getFullYear()} [TODO VAD: legal entity name]. All
+          rights reserved.
+        </p>
       </div>
       <div className="mx-auto max-w-6xl px-6 pb-10 text-xs text-ink-soft/80 sm:px-8">
         <p>

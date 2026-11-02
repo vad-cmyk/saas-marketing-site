@@ -51,7 +51,17 @@ export default function PrivacyPolicy() {
             account, storing and syncing your inventory and job data across the app and
             website, processing payments, sending account-related emails (like invites and
             password resets), and providing customer support. We do not sell your data,
-            and we do not use your business data for advertising.
+            and we do not use your business data for advertising. We process your data on
+            the basis of contract performance (to provide the service) and legitimate
+            interest (to improve it).
+          </p>
+        </section>
+
+        <section>
+          <h2 className="font-display text-xl text-ink">Cookies and tracking</h2>
+          <p className="mt-3">
+            We do not use cookies. Our analytics tool collects anonymous usage
+            statistics without cookies or personal identifiers.
           </p>
         </section>
 
@@ -82,7 +92,9 @@ export default function PrivacyPolicy() {
           <p className="mt-3">
             Data within a business account is only visible to members of that business —
             every staging business&rsquo;s inventory, jobs, and proposals are fully isolated
-            from every other business on Stage List.
+            from every other business on Stage List. Some of our processors may store or
+            process data outside the UK; where they do, we rely on their own standard
+            contractual safeguards.
           </p>
         </section>
 
