@@ -27,6 +27,7 @@ const faqs = [
   {
     q: "Is this like Stageforce?",
     a: "No. Stageforce is an all-in-one platform for warehouse-scale staging companies, priced in dollars from $49/month plus a platform fee, built around RFID scanning. Stage List does one job — know what you've got, where it is, and show the client — for stagers running from a single unit, for £29/month flat.",
+    link: { href: "/compare/stageforce", label: "Compare in detail →" },
   },
   {
     q: "Does a proposal include pricing or signatures?",
@@ -37,11 +38,13 @@ const faqs = [
 function FaqItem({
   q,
   a,
+  link,
   isOpen,
   onToggle,
 }: {
   q: string;
   a: string;
+  link?: { href: string; label: string };
   isOpen: boolean;
   onToggle: () => void;
 }) {
@@ -90,6 +93,14 @@ function FaqItem({
             }}
           >
             {a}
+            {link && (
+              <>
+                {" "}
+                <a href={link.href} className="link-sweep text-clay-deep">
+                  {link.label}
+                </a>
+              </>
+            )}
           </p>
         </div>
       </div>
@@ -119,6 +130,7 @@ export default function Faq() {
                 key={faq.q}
                 q={faq.q}
                 a={faq.a}
+                link={faq.link}
                 isOpen={openIndex === i}
                 onToggle={() => setOpenIndex(openIndex === i ? null : i)}
               />

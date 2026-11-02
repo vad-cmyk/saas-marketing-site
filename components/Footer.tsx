@@ -10,6 +10,9 @@ export default function Footer() {
           <a href="/support" className="link-sweep">
             Support
           </a>
+          <a href="/compare/stageforce" className="link-sweep">
+            Compare
+          </a>
           <a href="/privacy" className="link-sweep">
             Privacy
           </a>
