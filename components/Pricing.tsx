@@ -113,7 +113,7 @@ export default function Pricing() {
                 ))}
               </ul>
 
-              <SignupForm />
+              <SignupForm plan={cycle} />
             </div>
           </div>
         </Reveal>

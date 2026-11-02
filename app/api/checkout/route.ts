@@ -1,9 +1,9 @@
 // app/api/checkout/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { stripe, STAGE_LIST_PRICE_ID } from '@/lib/stripe';
+import { stripe, STAGE_LIST_PRICE_IDS, type BillingPlan } from '@/lib/stripe';
 
 export async function POST(request: NextRequest) {
-  const { email, businessName, website } = await request.json();
+  const { email, businessName, website, plan } = await request.json();
 
   // Defense in depth: the signup form's client-side honeypot field should
   // already stop bots before this request is sent, but don't trust the
@@ -22,11 +22,16 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  // Only monthly/yearly are selectable from the public form — the founder
+  // price exists in Stripe but isn't offered here (see lib/stripe.ts).
+  const selectedPlan: BillingPlan = plan === 'yearly' ? 'yearly' : 'monthly';
+  const priceId = STAGE_LIST_PRICE_IDS[selectedPlan];
+
   const origin = request.nextUrl.origin;
 
   const session = await stripe.checkout.sessions.create({
     mode: 'subscription',
-    line_items: [{ price: STAGE_LIST_PRICE_ID, quantity: 1 }],
+    line_items: [{ price: priceId, quantity: 1 }],
     customer_email: email,
     payment_method_collection: 'if_required',
     metadata: { business_name: businessName },

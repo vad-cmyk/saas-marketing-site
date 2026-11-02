@@ -5,7 +5,7 @@ import { track } from "@vercel/analytics";
 
 type Status = "idle" | "submitting" | "error";
 
-export default function SignupForm() {
+export default function SignupForm({ plan }: { plan: "monthly" | "yearly" }) {
   const [businessName, setBusinessName] = useState("");
   const [email, setEmail] = useState("");
   const [website, setWebsite] = useState(""); // honeypot — real users never fill this in
@@ -47,6 +47,7 @@ export default function SignupForm() {
           email: trimmedEmail,
           businessName: trimmedBusinessName,
           website,
+          plan,
         }),
       });
 
