@@ -5,7 +5,7 @@ if (!process.env.STRIPE_SECRET_KEY) {
   throw new Error('Missing STRIPE_SECRET_KEY');
 }
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY.trim(), {
   apiVersion: '2026-08-26.dahlia',
 });
 
@@ -16,18 +16,20 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 // dashboard for production; the defaults below are the TEST-mode prices
 // created 2026-11-02 under product prod_VC6k1V7DiEZZAP, used whenever the
 // env var isn't set (e.g. local dev against .env.local's test key).
-// [TODO VAD: once a live Stripe key is in Vercel, create live-mode
-// equivalents of these three prices and set STRIPE_PRICE_ID_MONTHLY /
-// STRIPE_PRICE_ID_YEARLY / STRIPE_PRICE_ID_FOUNDER in Vercel's production
-// env to those live IDs — leaving them unset in production would mean a
-// live key paired with test-mode price IDs, which fails every checkout.]
+//
+// .trim() guards against stray leading/trailing whitespace from pasting a
+// value into Vercel's env var UI — confirmed live 2026-11-03: a copy-pasted
+// price ID picked up a leading tab character, which Stripe treats as part
+// of the ID, producing a "No such price" error on every checkout attempt.
+const envPrice = (name: string) => process.env[name]?.trim() || undefined;
+
 export const STAGE_LIST_PRICE_IDS = {
-  monthly: process.env.STRIPE_PRICE_ID_MONTHLY ?? 'price_1UXODI0GWnkpvsiAA9hadVV9', // £29/month
-  yearly: process.env.STRIPE_PRICE_ID_YEARLY ?? 'price_1UXODI0GWnkpvsiAUh0kAvlR', // £290/year
+  monthly: envPrice('STRIPE_PRICE_ID_MONTHLY') ?? 'price_1UXODI0GWnkpvsiAA9hadVV9', // £29/month
+  yearly: envPrice('STRIPE_PRICE_ID_YEARLY') ?? 'price_1UXODI0GWnkpvsiAUh0kAvlR', // £290/year
   // Not wired into the public signup form — there's no backend enforcement
   // of "first 20 businesses," so this price is for manually onboarding
   // founding customers (e.g. a Stripe Payment Link) until that's built.
-  founder: process.env.STRIPE_PRICE_ID_FOUNDER ?? 'price_1UXODJ0GWnkpvsiAOTZeXYWO', // £19/month, founder offer
+  founder: envPrice('STRIPE_PRICE_ID_FOUNDER') ?? 'price_1UXODJ0GWnkpvsiAOTZeXYWO', // £19/month, founder offer
 } as const;
 
 export type BillingPlan = keyof typeof STAGE_LIST_PRICE_IDS;
