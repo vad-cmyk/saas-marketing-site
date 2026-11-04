@@ -1,10 +1,7 @@
 // app/api/android-interest/route.ts
 import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
 
-// [TODO VAD: wire android_interest capture to a real destination — no
-// backend table exists for this yet, requires a schema change. For now this
-// just logs the email server-side and always reports success so the UI can
-// show a confirmation regardless.]
 export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => null);
   const email = typeof body?.email === "string" ? body.email.trim() : "";
@@ -20,7 +17,23 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "email is required" }, { status: 400 });
   }
 
-  console.log("[android-interest] registered:", email);
+  // Plain anon-key client, not the SSR cookie-based one — this route has no
+  // user session to read, it's a public, unauthenticated capture form. The
+  // android_interest table's RLS policy only grants INSERT to anon, so this
+  // can't be used to read back anyone else's submitted email.
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  );
+
+  const { error } = await supabase.from("android_interest").insert({ email });
+
+  if (error) {
+    console.error("[android-interest] insert failed:", error);
+    // Still report success to the visitor — a dropped signup isn't
+    // something they can act on, and surfacing a technical error here
+    // would be more confusing than reassuring.
+  }
 
   return NextResponse.json({ ok: true });
 }
