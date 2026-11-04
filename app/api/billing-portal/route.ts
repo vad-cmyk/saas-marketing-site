@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
 import { getMyOrganization } from '@/lib/get-my-organization';
+import { stripeErrorResponse } from '@/lib/stripeErrorResponse';
 
 export async function POST(request: NextRequest) {
   // getMyOrganization() resolves the org from the authenticated session's own
@@ -22,10 +23,13 @@ export async function POST(request: NextRequest) {
 
   const origin = request.nextUrl.origin;
 
-  const session = await stripe.billingPortal.sessions.create({
-    customer: org.stripe_customer_id,
-    return_url: `${origin}/dashboard`,
-  });
-
-  return NextResponse.json({ url: session.url });
+  try {
+    const session = await stripe.billingPortal.sessions.create({
+      customer: org.stripe_customer_id,
+      return_url: `${origin}/dashboard`,
+    });
+    return NextResponse.json({ url: session.url });
+  } catch (err) {
+    return stripeErrorResponse(err, 'billing-portal');
+  }
 }
