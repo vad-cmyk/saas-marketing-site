@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import Image from "next/image";
 import { track } from "@vercel/analytics";
 
 // [TODO VAD: App Store URL once approved]
@@ -176,11 +177,14 @@ export default function Hero() {
                   className="absolute top-2 left-1/2 z-10 h-5 w-20 -translate-x-1/2 rounded-full bg-ink"
                   aria-hidden="true"
                 />
-                <div className="flex h-full w-full flex-col items-center justify-center gap-2 p-6 text-center">
-                  <p className="text-xs leading-snug text-ink-soft">
-                    [TODO VAD: app screenshot, 1290&times;2796]
-                  </p>
-                </div>
+                <Image
+                  src="/app-screenshot.png"
+                  alt="Stage List inventory screen on iPhone, showing a searchable, filterable list of staging pieces"
+                  fill
+                  sizes="(min-width: 640px) 260px, 220px"
+                  className="object-cover"
+                  priority
+                />
               </div>
             </div>
           </div>
