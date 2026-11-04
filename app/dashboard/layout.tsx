@@ -79,9 +79,9 @@ export default async function DashboardLayout({
         </SignOutButton>
       </aside>
       <main className="flex-1 bg-cream px-5 py-6 sm:px-10 sm:py-10">
-        {org.subscription_status === 'trialing' && org.trial_ends_at && (
-          <TrialBanner trialEndsAt={org.trial_ends_at} />
-        )}
+        {org.subscription_status === 'trialing' &&
+          org.trial_ends_at &&
+          !org.has_payment_method && <TrialBanner trialEndsAt={org.trial_ends_at} />}
         {children}
       </main>
     </div>
