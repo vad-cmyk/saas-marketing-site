@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { getMyOrganization } from '@/lib/get-my-organization';
 import SignOutButton from './SignOutButton';
 import TrialBanner from './TrialBanner';
+import ManageBillingLink from './ManageBillingLink';
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard' },
@@ -74,9 +75,12 @@ export default async function DashboardLayout({
             </Link>
           ))}
         </nav>
-        <SignOutButton className="mt-4 rounded-xl border border-line px-3 py-2 text-left text-sm font-medium text-ink-soft transition-colors duration-200 ease-out hover:bg-cream hover:text-ink sm:mt-auto">
-          Sign out
-        </SignOutButton>
+        <div className="mt-4 flex flex-col gap-1 sm:mt-auto">
+          <ManageBillingLink className="rounded-xl border border-line px-3 py-2 text-left text-sm font-medium text-ink-soft transition-colors duration-200 ease-out hover:bg-cream hover:text-ink disabled:opacity-60" />
+          <SignOutButton className="rounded-xl border border-line px-3 py-2 text-left text-sm font-medium text-ink-soft transition-colors duration-200 ease-out hover:bg-cream hover:text-ink">
+            Sign out
+          </SignOutButton>
+        </div>
       </aside>
       <main className="flex-1 bg-cream px-5 py-6 sm:px-10 sm:py-10">
         {org.subscription_status === 'trialing' &&

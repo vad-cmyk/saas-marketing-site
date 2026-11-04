@@ -19,7 +19,7 @@ const faqs = [
   },
   {
     q: "How do I cancel or change my subscription?",
-    a: "Email hello@thestagelist.com and we'll take care of it — no contract or minimum term.",
+    a: "Sign in and click \"Manage billing\" in the dashboard — you can cancel or update your payment method yourself, anytime. No contract or minimum term. If you'd rather we handle it, email hello@thestagelist.com.",
   },
 ];
 
