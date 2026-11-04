@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { getMyOrganization } from '@/lib/get-my-organization';
 import SignOutButton from './SignOutButton';
+import TrialBanner from './TrialBanner';
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard' },
@@ -77,7 +78,12 @@ export default async function DashboardLayout({
           Sign out
         </SignOutButton>
       </aside>
-      <main className="flex-1 bg-cream px-5 py-6 sm:px-10 sm:py-10">{children}</main>
+      <main className="flex-1 bg-cream px-5 py-6 sm:px-10 sm:py-10">
+        {org.subscription_status === 'trialing' && org.trial_ends_at && (
+          <TrialBanner trialEndsAt={org.trial_ends_at} />
+        )}
+        {children}
+      </main>
     </div>
   );
 }

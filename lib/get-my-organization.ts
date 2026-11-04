@@ -6,7 +6,7 @@ export const getMyOrganization = cache(async () => {
   const { data, error } = await supabase
     .from('memberships')
     .select(
-      'role, organizations(id, name, subscription_status, trial_ends_at, logo_url, brand_color, contact_email, contact_phone)',
+      'role, organizations(id, name, subscription_status, trial_ends_at, logo_url, brand_color, contact_email, contact_phone, stripe_customer_id)',
     )
     .limit(1)
     .maybeSingle();
@@ -24,5 +24,6 @@ export const getMyOrganization = cache(async () => {
     brand_color: string | null;
     contact_email: string | null;
     contact_phone: string | null;
+    stripe_customer_id: string | null;
   };
 });
