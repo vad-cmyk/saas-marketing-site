@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Reveal from "./Reveal";
 
 export default function Proof() {
@@ -16,8 +17,14 @@ export default function Proof() {
         <Reveal delay={100} className="mt-12">
           <div className="grid gap-8 rounded-2xl border border-line bg-paper p-8 sm:p-10 lg:grid-cols-[auto_1fr] lg:items-start lg:gap-10">
             <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
-              <div className="flex h-32 w-32 shrink-0 items-center justify-center rounded-xl border border-line bg-cream-deep/60 p-3 text-center text-xs text-ink-soft">
-                [TODO VAD: Jazmine photo, square, ~400px]
+              <div className="relative h-32 w-32 shrink-0 overflow-hidden rounded-xl border border-line">
+                <Image
+                  src="/jazmine.jpg"
+                  alt="Jazmine, founder of Staged Ready"
+                  fill
+                  sizes="128px"
+                  className="object-cover"
+                />
               </div>
               <p className="mt-4 font-display text-lg text-ink">Jazmine</p>
               <p className="text-sm text-ink-soft">Founder, Staged Ready — Norfolk</p>
@@ -25,13 +32,10 @@ export default function Proof() {
 
             <div>
               <blockquote className="text-lg leading-relaxed text-ink">
-                <span className="text-sm font-semibold uppercase tracking-[0.08em] text-clay-deep">
-                  [TODO VAD: confirm with Jazmine]
-                </span>
-                <p className="mt-2">
-                  &ldquo;I was about to pay $100 a month for Stageforce and realised I
-                  only needed a fifth of it. Stage List does that fifth, on my phone,
-                  in the storage unit.&rdquo;
+                <p>
+                  &ldquo;Stage List is really good software — it tracks every item I
+                  own, so I always know what&rsquo;s free before it goes out to a
+                  job.&rdquo;
                 </p>
               </blockquote>
 

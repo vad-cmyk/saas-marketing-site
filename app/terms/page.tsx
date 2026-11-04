@@ -13,9 +13,9 @@ export default function TermsOfService() {
       <div className="mt-10 space-y-8 text-base leading-relaxed text-ink-soft">
         <p>
           These terms govern your use of Stage List. References to &ldquo;we&rdquo;,
-          &ldquo;us&rdquo;, or &ldquo;Stage List&rdquo; mean{" "}
-          [TODO VAD: legal entity name and address]. By signing up for or using Stage
-          List, you agree to these terms. This document is written in plain English and
+          &ldquo;us&rdquo;, or &ldquo;Stage List&rdquo; mean The Stage List, 14
+          Tipperary Avenue, NR18 0ZA. By signing up for or using Stage List, you
+          agree to these terms. This document is written in plain English and
           is not a substitute for independent legal advice.
         </p>
 

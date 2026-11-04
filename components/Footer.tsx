@@ -21,14 +21,13 @@ export default function Footer() {
           </a>
         </div>
         <p>
-          &copy; {new Date().getFullYear()} [TODO VAD: legal entity name]. All
-          rights reserved.
+          &copy; {new Date().getFullYear()} The Stage List. All rights reserved.
         </p>
       </div>
       <div className="mx-auto max-w-6xl px-6 pb-10 text-xs text-ink-soft/80 sm:px-8">
         <p>
-          [TODO VAD: confirm wording] Built in Norfolk by Vad, whose wife runs a
-          staging business from a single unit.
+          Built in Norfolk by Vad, whose wife runs a staging business from a
+          single unit.
         </p>
       </div>
     </footer>
