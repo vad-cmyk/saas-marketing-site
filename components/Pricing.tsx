@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Reveal from "./Reveal";
 import SignupForm from "./SignupForm";
 
@@ -12,10 +12,32 @@ const included = [
   "Works on iPhone and in any browser",
 ];
 
-type Cycle = "monthly" | "yearly";
+type Plan = "monthly" | "yearly" | "founder";
 
 export default function Pricing() {
-  const [cycle, setCycle] = useState<Cycle>("monthly");
+  const [plan, setPlan] = useState<Plan>("monthly");
+  const [founderRemaining, setFounderRemaining] = useState<number | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/founder-availability")
+      .then((res) => res.json())
+      .then((data: { remaining: number }) => {
+        if (!cancelled) setFounderRemaining(data.remaining);
+      })
+      .catch(() => {
+        // Leave it null on failure — the founder option just stays hidden
+        // rather than claiming a count we don't actually have.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const founderSoldOut = founderRemaining === 0;
+  // Never leave a sold-out plan selected if it goes to zero after the user
+  // already picked it (e.g. they left the tab open while the last spot went).
+  const cycle = plan === "founder" && founderSoldOut ? "monthly" : plan;
 
   return (
     <section id="pricing" className="border-b border-line/70">
@@ -45,7 +67,7 @@ export default function Pricing() {
               <div className="mt-6 inline-flex items-center gap-1 rounded-full border border-line bg-cream-deep/60 p-1 text-sm">
                 <button
                   type="button"
-                  onClick={() => setCycle("monthly")}
+                  onClick={() => setPlan("monthly")}
                   aria-pressed={cycle === "monthly"}
                   className={`rounded-full px-4 py-1.5 font-semibold transition-colors duration-300 ease-out ${
                     cycle === "monthly"
@@ -57,7 +79,7 @@ export default function Pricing() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setCycle("yearly")}
+                  onClick={() => setPlan("yearly")}
                   aria-pressed={cycle === "yearly"}
                   className={`rounded-full px-4 py-1.5 font-semibold transition-colors duration-300 ease-out ${
                     cycle === "yearly"
@@ -71,25 +93,46 @@ export default function Pricing() {
 
               <div className="mt-6 flex items-end justify-center gap-2">
                 <span className="font-display text-6xl leading-none text-ink">
-                  {cycle === "monthly" ? "£29" : "£290"}
+                  {cycle === "monthly" ? "£29" : cycle === "yearly" ? "£290" : "£19"}
                 </span>
                 <span className="pb-1.5 text-lg text-ink-soft">
-                  {cycle === "monthly" ? "/ month" : "/ year"}
+                  / {cycle === "yearly" ? "year" : "month"}
                 </span>
               </div>
               {cycle === "yearly" && (
                 <p className="mt-1 text-sm text-sage-deep">Two months free</p>
               )}
+              {cycle === "founder" && (
+                <p className="mt-1 text-sm text-sage-deep">Locked for life</p>
+              )}
               <p className="mt-3 text-sm text-ink-soft">
-                Try Stage List free for 30 days. Only add a card if you
-                decide to keep going.
+                {cycle === "founder"
+                  ? "Try Stage List free for 30 days, then £19/month for as long as you stay subscribed."
+                  : "Try Stage List free for 30 days. Only add a card if you decide to keep going."}
               </p>
 
-              <p className="mt-5 inline-flex items-center gap-2 rounded-full bg-sage px-4 py-1.5 text-center text-xs font-semibold text-paper">
-                Founding stagers: £19/month, locked for life. First 20
-                businesses.
-              </p>
-              <p className="mt-1.5 text-xs text-ink-soft">Limited to 20.</p>
+              {cycle === "founder" ? (
+                <button
+                  type="button"
+                  onClick={() => setPlan("monthly")}
+                  className="mt-5 text-xs font-semibold text-ink-soft underline decoration-line underline-offset-4 hover:text-ink"
+                >
+                  Back to standard pricing
+                </button>
+              ) : founderSoldOut ? (
+                <p className="mt-5 inline-flex items-center gap-2 rounded-full bg-cream-deep px-4 py-1.5 text-center text-xs font-semibold text-ink-soft">
+                  Founder pricing — sold out
+                </p>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setPlan("founder")}
+                  className="mt-5 inline-flex items-center gap-2 rounded-full bg-sage px-4 py-1.5 text-center text-xs font-semibold text-paper transition-colors duration-300 ease-out hover:bg-sage-deep"
+                >
+                  Founding stagers: £19/month, locked for life
+                  {founderRemaining !== null && ` — ${founderRemaining} of 20 left`}
+                </button>
+              )}
 
               <ul className="mt-8 space-y-3 text-left">
                 {included.map((item) => (

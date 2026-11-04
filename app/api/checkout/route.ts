@@ -1,6 +1,7 @@
 // app/api/checkout/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { stripe, STAGE_LIST_PRICE_IDS, type BillingPlan } from '@/lib/stripe';
+import { getFounderAvailability } from '@/lib/founderAvailability';
 
 export async function POST(request: NextRequest) {
   const { email, businessName, website, plan } = await request.json();
@@ -22,9 +23,23 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // Only monthly/yearly are selectable from the public form — the founder
-  // price exists in Stripe but isn't offered here (see lib/stripe.ts).
-  const selectedPlan: BillingPlan = plan === 'yearly' ? 'yearly' : 'monthly';
+  const selectedPlan: BillingPlan =
+    plan === 'yearly' ? 'yearly' : plan === 'founder' ? 'founder' : 'monthly';
+
+  // The UI disables the founder option once sold out, but that's only
+  // convenience — this is the actual gate. Re-checked here rather than
+  // trusted from the client, since the request body is just JSON anyone
+  // could post directly.
+  if (selectedPlan === 'founder') {
+    const { soldOut } = await getFounderAvailability();
+    if (soldOut) {
+      return NextResponse.json(
+        { error: 'Founder pricing is sold out — the first 20 spots are taken.' },
+        { status: 409 },
+      );
+    }
+  }
+
   const priceId = STAGE_LIST_PRICE_IDS[selectedPlan];
 
   const origin = request.nextUrl.origin;
