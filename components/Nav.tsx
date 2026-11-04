@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function Nav() {
   return (
     <header className="sticky top-0 z-50 border-b border-line/70 bg-cream/85 backdrop-blur">
@@ -6,7 +8,7 @@ export default function Nav() {
           href="#top"
           className="flex items-center gap-2.5 transition-transform duration-300 ease-out hover:-translate-y-0.5"
         >
-          <img src="/logo-icon.png" alt="" className="h-9 w-9" />
+          <Image src="/logo-icon.png" alt="" width={36} height={36} className="h-9 w-9" priority />
           <span className="font-display text-xl tracking-tight text-ink">
             Stage List
           </span>

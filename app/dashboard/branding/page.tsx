@@ -22,9 +22,12 @@ export default function BrandingPage() {
 
   // Seed local edit state from the loaded org once, not on every refetch —
   // otherwise a background refetch mid-edit would clobber unsaved changes.
+  // Deliberate one-time sync from async data, not a reactive side effect —
+  // the `seeded` guard makes this idempotent, so it doesn't cascade.
   const [seeded, setSeeded] = useState(false);
   useEffect(() => {
     if (org && !seeded) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setBrandColor(org.brand_color ?? '');
       setContactEmail(org.contact_email ?? '');
       setContactPhone(org.contact_phone ?? '');

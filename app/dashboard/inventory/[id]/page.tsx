@@ -47,8 +47,11 @@ export default function ItemDetailPage() {
     purchase_price: '',
   });
 
+  // Deliberate sync from async data into local edit state, guarded by
+  // `!editing` so it doesn't cascade once the form is actually in use.
   useEffect(() => {
     if (item && !editing) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setForm({
         name: item.name,
         category: item.category,

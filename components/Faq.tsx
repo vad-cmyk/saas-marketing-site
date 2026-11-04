@@ -56,8 +56,12 @@ function FaqItem({
   // close motion still reads as smooth rather than an abrupt snap.
   const [rowOpen, setRowOpen] = useState(isOpen);
 
+  // Deliberate: syncing local open/closed state to the `isOpen` prop with
+  // asymmetric timing (instant open, delayed close) for the exit animation
+  // described above — the effect's own job here, not a side-effect bug.
   useEffect(() => {
     if (isOpen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setRowOpen(true);
       return;
     }

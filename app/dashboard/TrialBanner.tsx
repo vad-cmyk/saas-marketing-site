@@ -6,8 +6,14 @@ export default function TrialBanner({ trialEndsAt }: { trialEndsAt: string }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Date.now() is an impure read — not safe to call directly in render, and
+  // useMemo's factory still runs during render so it doesn't help either.
+  // A lazy useState initializer is the documented exception: it runs once,
+  // outside React's purity checks for render itself. More than accurate
+  // enough for a once-a-day-resolution trial countdown.
+  const [now] = useState(() => Date.now());
   const daysLeft = Math.ceil(
-    (new Date(trialEndsAt).getTime() - Date.now()) / (24 * 60 * 60 * 1000),
+    (new Date(trialEndsAt).getTime() - now) / (24 * 60 * 60 * 1000),
   );
   const ended = daysLeft <= 0;
   // Within the last 5 days (or already ended), switch to the site's accent
