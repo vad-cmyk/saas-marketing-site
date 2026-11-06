@@ -5,7 +5,9 @@ Production domain: thestagelist.com (apex redirects to www)
 
 ## Summary
 
-In progress — security section complete, remaining sections to follow.
+✅ 26 pass · ⚠️ 1 needs client input · ❌ 0 fail · 🧑‍💼 1 client-only action · — 3 not applicable (SaaS vs. local-business model)
+
+Everything that could be fixed in code has been. The one ⚠️ (business identity — owner's legal name) and the one 🧑‍💼 (Search Console) need information or access only the client has; nothing found was left unfixed for any other reason.
 
 ## Checks
 
