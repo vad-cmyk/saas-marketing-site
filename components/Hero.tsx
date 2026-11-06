@@ -43,10 +43,17 @@ function AppStoreBadge() {
 
 function AndroidInterestForm() {
   const [email, setEmail] = useState("");
+  const [website, setWebsite] = useState(""); // honeypot — real users never fill this in
+  const [startedAt] = useState(() => Date.now()); // time trap, see SignupForm
   const [status, setStatus] = useState<"idle" | "submitting" | "done">("idle");
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    // Honeypot: if this hidden field is filled, it's almost certainly a
+    // bot. Silently no-op — no API call, same as the signup form's.
+    if (website.trim()) return;
+
     const trimmed = email.trim();
     if (!trimmed) return;
 
@@ -55,7 +62,7 @@ function AndroidInterestForm() {
       await fetch("/api/android-interest", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: trimmed }),
+        body: JSON.stringify({ email: trimmed, website, startedAt }),
       });
     } catch {
       // Intentionally swallow — we show a confirmation regardless, there's
@@ -84,6 +91,22 @@ function AndroidInterestForm() {
         disabled={status === "submitting"}
         className="w-48 rounded-full border border-line bg-paper px-4 py-2 text-sm text-ink placeholder:text-ink-soft/60 transition-[border-color,box-shadow] duration-300 ease-out focus-visible:border-clay disabled:opacity-60"
       />
+
+      {/* Honeypot field — hidden from real users, off-canvas rather than
+          display:none so bots that skip display:none still fill it in. */}
+      <div className="absolute -left-[9999px] top-auto h-0 w-0 overflow-hidden" aria-hidden="true">
+        <label htmlFor="android-website">Website</label>
+        <input
+          id="android-website"
+          name="website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          value={website}
+          onChange={(event) => setWebsite(event.target.value)}
+        />
+      </div>
+
       <button
         type="submit"
         disabled={status === "submitting"}

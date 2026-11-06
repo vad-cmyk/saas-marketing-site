@@ -9,6 +9,9 @@ export default function SignupForm({ plan }: { plan: "monthly" | "yearly" | "fou
   const [businessName, setBusinessName] = useState("");
   const [email, setEmail] = useState("");
   const [website, setWebsite] = useState(""); // honeypot — real users never fill this in
+  // Time trap: set once at mount, sent back on submit. A real visitor takes
+  // at least a couple of seconds to read the form and type into it.
+  const [startedAt] = useState(() => Date.now());
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
 
@@ -47,6 +50,7 @@ export default function SignupForm({ plan }: { plan: "monthly" | "yearly" | "fou
           email: trimmedEmail,
           businessName: trimmedBusinessName,
           website,
+          startedAt,
           plan,
         }),
       });

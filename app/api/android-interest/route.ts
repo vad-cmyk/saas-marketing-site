@@ -1,21 +1,24 @@
 // app/api/android-interest/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { isValidEmail, submittedTooFast } from "@/lib/formValidation";
 
 export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => null);
-  const email = typeof body?.email === "string" ? body.email.trim() : "";
 
-  // Defense in depth: reject the same honeypot field name the signup form
-  // uses, in case this route is ever targeted directly by a bot.
+  // Defense in depth: reject the same honeypot field name and time-trap
+  // field the forms send, in case this route is ever targeted directly.
+  // Silent fake-success either way — no hint to a bot which check caught it.
   const honeypot = typeof body?.website === "string" ? body.website.trim() : "";
-  if (honeypot) {
+  if (honeypot || submittedTooFast(body?.startedAt)) {
     return NextResponse.json({ ok: true });
   }
 
-  if (!email) {
-    return NextResponse.json({ error: "email is required" }, { status: 400 });
+  if (!isValidEmail(body?.email)) {
+    return NextResponse.json({ error: "Please enter a valid email address." }, { status: 400 });
   }
+
+  const email = body.email.trim();
 
   // Plain anon-key client, not the SSR cookie-based one — this route has no
   // user session to read, it's a public, unauthenticated capture form. The
