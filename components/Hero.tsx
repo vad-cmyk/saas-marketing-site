@@ -44,7 +44,9 @@ function AppStoreBadge() {
 function AndroidInterestForm() {
   const [email, setEmail] = useState("");
   const [website, setWebsite] = useState(""); // honeypot — real users never fill this in
-  const [startedAt] = useState(() => Date.now()); // time trap, see SignupForm
+  // Time trap: set once at mount, sent back on submit. A real visitor takes
+  // at least a couple of seconds to read the form and type into it.
+  const [startedAt] = useState(() => Date.now());
   const [status, setStatus] = useState<"idle" | "submitting" | "done">("idle");
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -131,95 +133,105 @@ export default function Hero() {
           "radial-gradient(ellipse 60% 50% at 15% 10%, rgba(188,86,46,0.14), transparent 60%), radial-gradient(ellipse 55% 45% at 90% 15%, rgba(85,98,74,0.14), transparent 60%), radial-gradient(ellipse 70% 60% at 50% 100%, rgba(188,86,46,0.08), transparent 65%)",
       }}
     >
-      <div className="relative z-10 mx-auto grid max-w-6xl gap-14 px-6 py-20 sm:px-8 sm:py-28 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:py-32">
-        <div>
-          <p
-            className="anim-fadeup mb-6 inline-flex items-center gap-2 rounded-full border border-clay/30 bg-paper/70 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-clay-deep"
-            style={{ animationDelay: "0ms" }}
-          >
-            Built for property staging businesses
-          </p>
+      <div className="relative z-10 mx-auto flex max-w-6xl flex-col gap-16 px-6 py-16 sm:px-8 sm:py-24 lg:py-28">
+        <p
+          className="anim-fadeup inline-flex w-fit items-center gap-2 self-center rounded-full border border-clay/30 bg-paper/70 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-clay-deep lg:self-start"
+          style={{ animationDelay: "0ms" }}
+        >
+          Built for property staging businesses
+        </p>
 
-          <h1
-            className="anim-fadeup text-[2.6rem] leading-[1.04] font-normal text-ink sm:text-[3.4rem] lg:text-[3.9rem]"
-            style={{ animationDelay: "80ms" }}
-          >
-            Every sofa, lamp, and vase —{" "}
-            <em className="text-clay-deep italic">accounted for</em>, every
-            job.
-          </h1>
-
-          <p
-            className="anim-fadeup mt-7 max-w-xl text-lg text-ink-soft sm:text-xl"
-            style={{ animationDelay: "170ms" }}
-          >
-            Stage List is the mobile inventory and job-allocation tool built
-            for property stagers. Photograph a piece once, then allocate it
-            to jobs with confidence — no more promising the same sofa to two
-            clients in the same week.
-          </p>
-
-          <p
-            className="anim-fadeup mt-3 max-w-xl text-base text-ink-soft"
-            style={{ animationDelay: "210ms" }}
-          >
-            Catalogue and allocate from your phone in the unit. Review and
-            send proposals from your laptop at your desk.
-          </p>
-
+        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[0.7fr_0.85fr_1.35fr]">
+          {/* Narrow left column — the supporting line and the trial CTA. */}
           <div
-            className="anim-fadeup mt-10 flex flex-wrap items-center gap-5"
-            style={{ animationDelay: "260ms" }}
+            className="anim-fadeup order-2 text-center lg:order-1 lg:text-left"
+            style={{ animationDelay: "120ms" }}
           >
+            <p className="mx-auto max-w-xs text-base leading-relaxed text-ink-soft lg:mx-0">
+              Photograph a piece once, then allocate it to jobs with
+              confidence — no more promising the same sofa to two clients in
+              the same week. Catalogue from your phone in the unit; review
+              from your laptop at your desk.
+            </p>
             <a
               href="#pricing"
-              className="rounded-full bg-clay px-7 py-3.5 text-base font-semibold text-paper shadow-[0_10px_28px_-10px_rgba(156,68,35,0.6)] transition-[transform,background-color,box-shadow] duration-300 ease-out hover:-translate-y-0.5 hover:bg-clay-deep hover:shadow-[0_16px_34px_-10px_rgba(156,68,35,0.7)] active:translate-y-0"
+              className="mt-6 inline-block rounded-full bg-clay px-7 py-3.5 text-base font-semibold text-paper shadow-[0_10px_28px_-10px_rgba(156,68,35,0.6)] transition-[transform,background-color,box-shadow] duration-300 ease-out hover:-translate-y-0.5 hover:bg-clay-deep hover:shadow-[0_16px_34px_-10px_rgba(156,68,35,0.7)] active:translate-y-0"
             >
               Start your free trial
             </a>
-            <span className="text-sm text-ink-soft">
-              30-day free trial · No card required to start
-            </span>
+            <p className="mt-3 text-sm text-ink-soft">30-day free trial · No card required</p>
           </div>
 
+          {/* Centre — the phone mockup set in a layered brand circle. */}
           <div
-            className="anim-fadeup mt-8 flex flex-wrap items-center gap-6"
-            style={{ animationDelay: "300ms" }}
+            className="anim-fadescale relative order-1 mx-auto flex h-[340px] w-full max-w-sm items-center justify-center lg:order-2 lg:h-[420px]"
+            style={{ animationDelay: "260ms", ["--tilt" as string]: "-2deg" }}
           >
-            <AppStoreBadge />
-            <AndroidInterestForm />
+            <div
+              aria-hidden="true"
+              className="absolute h-[300px] w-[300px] rounded-full border border-clay/25 sm:h-[360px] sm:w-[360px] lg:h-[400px] lg:w-[400px]"
+              style={{ transform: "translate(14px, -10px)" }}
+            />
+            <div
+              aria-hidden="true"
+              className="absolute h-[280px] w-[280px] rounded-full sm:h-[340px] sm:w-[340px] lg:h-[380px] lg:w-[380px]"
+              style={{
+                background:
+                  "radial-gradient(circle at 30% 26%, rgba(255,253,248,0.55), transparent 45%), radial-gradient(circle at 70% 80%, rgba(65,75,55,0.3), transparent 58%), var(--clay)",
+                boxShadow:
+                  "0 40px 80px -30px rgba(156,68,35,0.45), 0 18px 40px -18px rgba(33,28,23,0.25)",
+              }}
+            />
+            <div className="relative mx-auto rotate-[-2deg] transition-transform duration-500 ease-out hover:rotate-0">
+              <div className="relative mx-auto w-[220px] rounded-[2.25rem] border-[6px] border-ink bg-ink p-2 shadow-[0_30px_60px_-20px_rgba(33,28,23,0.4)] sm:w-[250px]">
+                <div className="relative aspect-[9/19.5] w-full overflow-hidden rounded-[1.6rem] bg-paper">
+                  <div
+                    className="absolute top-2 left-1/2 z-10 h-5 w-20 -translate-x-1/2 rounded-full bg-ink"
+                    aria-hidden="true"
+                  />
+                  <Image
+                    src="/app-screenshot.jpg"
+                    alt="Stage List inventory screen on iPhone, showing a searchable, filterable list of staging pieces"
+                    fill
+                    sizes="(min-width: 640px) 250px, 220px"
+                    className="object-cover"
+                    priority
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="absolute -bottom-4 -left-2 rotate-[3deg] rounded-2xl border border-line bg-paper px-4 py-3 shadow-[0_18px_36px_-14px_rgba(33,28,23,0.3)] sm:-left-6">
+              <p className="text-xs font-semibold uppercase tracking-[0.1em] text-sage-deep">
+                Available for job
+              </p>
+              <p className="mt-1 font-display text-xl text-ink">3 of 5 in stock</p>
+            </div>
+          </div>
+
+          {/* Right — the big stacked headline, led in by the rest of the
+              sentence so it reads as a payoff, not an isolated slogan. */}
+          <div
+            className="anim-fadeup order-3 text-center lg:text-right"
+            style={{ animationDelay: "180ms" }}
+          >
+            <p className="text-lg text-ink-soft sm:text-xl">
+              Every sofa, lamp, and vase —
+            </p>
+            <h1 className="font-display text-[3.2rem] leading-[0.95] tracking-tight text-ink whitespace-nowrap sm:text-[4.4rem] lg:text-[4.2rem] xl:text-[4.8rem]">
+              never
+              <br />
+              <em className="text-clay-deep italic">double-booked.</em>
+            </h1>
           </div>
         </div>
 
+        {/* Footer row — App Store badge and Android waitlist. */}
         <div
-          className="anim-fadescale relative mx-auto w-full max-w-md lg:mx-0"
-          style={{ animationDelay: "260ms", ["--tilt" as string]: "-2deg" }}
+          className="anim-fadeup flex flex-col items-center justify-between gap-6 border-t border-line/70 pt-8 sm:flex-row"
+          style={{ animationDelay: "320ms" }}
         >
-          <div className="relative mx-auto rotate-[-2deg] transition-transform duration-500 ease-out hover:rotate-0">
-            {/* CSS-only iPhone frame */}
-            <div className="relative mx-auto w-[220px] rounded-[2.25rem] border-[6px] border-ink bg-ink p-2 shadow-[0_30px_60px_-20px_rgba(33,28,23,0.4)] sm:w-[260px]">
-              <div className="relative aspect-[9/19.5] w-full overflow-hidden rounded-[1.6rem] bg-paper">
-                <div
-                  className="absolute top-2 left-1/2 z-10 h-5 w-20 -translate-x-1/2 rounded-full bg-ink"
-                  aria-hidden="true"
-                />
-                <Image
-                  src="/app-screenshot.jpg"
-                  alt="Stage List inventory screen on iPhone, showing a searchable, filterable list of staging pieces"
-                  fill
-                  sizes="(min-width: 640px) 260px, 220px"
-                  className="object-cover"
-                  priority
-                />
-              </div>
-            </div>
-          </div>
-          <div className="absolute -bottom-6 -left-6 rotate-[3deg] rounded-2xl border border-line bg-paper px-5 py-4 shadow-[0_18px_36px_-14px_rgba(33,28,23,0.3)] sm:-left-10">
-            <p className="text-xs font-semibold uppercase tracking-[0.1em] text-sage-deep">
-              Available for job
-            </p>
-            <p className="mt-1 font-display text-2xl text-ink">3 of 5 in stock</p>
-          </div>
+          <AppStoreBadge />
+          <AndroidInterestForm />
         </div>
       </div>
     </section>
