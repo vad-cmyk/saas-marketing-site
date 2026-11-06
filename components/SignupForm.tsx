@@ -92,7 +92,7 @@ export default function SignupForm({ plan }: { plan: "monthly" | "yearly" | "fou
           value={businessName}
           onChange={(event) => setBusinessName(event.target.value)}
           disabled={isSubmitting}
-          className="w-full rounded-full border border-line bg-paper px-5 py-3 text-sm text-ink placeholder:text-ink-soft/60 transition-[border-color,box-shadow] duration-300 ease-out focus-visible:border-clay disabled:opacity-60"
+          className="w-full rounded-full border border-line bg-paper px-5 py-3 text-base text-ink placeholder:text-ink-soft/60 transition-[border-color,box-shadow] duration-300 ease-out focus-visible:border-clay disabled:opacity-60"
         />
       </div>
 
@@ -109,7 +109,7 @@ export default function SignupForm({ plan }: { plan: "monthly" | "yearly" | "fou
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           disabled={isSubmitting}
-          className="w-full rounded-full border border-line bg-paper px-5 py-3 text-sm text-ink placeholder:text-ink-soft/60 transition-[border-color,box-shadow] duration-300 ease-out focus-visible:border-clay disabled:opacity-60"
+          className="w-full rounded-full border border-line bg-paper px-5 py-3 text-base text-ink placeholder:text-ink-soft/60 transition-[border-color,box-shadow] duration-300 ease-out focus-visible:border-clay disabled:opacity-60"
         />
       </div>
 

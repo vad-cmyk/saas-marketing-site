@@ -89,7 +89,7 @@ function AndroidInterestForm() {
         value={email}
         onChange={(event) => setEmail(event.target.value)}
         disabled={status === "submitting"}
-        className="w-48 rounded-full border border-line bg-paper px-4 py-2 text-sm text-ink placeholder:text-ink-soft/60 transition-[border-color,box-shadow] duration-300 ease-out focus-visible:border-clay disabled:opacity-60"
+        className="w-48 rounded-full border border-line bg-paper px-4 py-2 text-base text-ink placeholder:text-ink-soft/60 transition-[border-color,box-shadow] duration-300 ease-out focus-visible:border-clay disabled:opacity-60"
       />
 
       {/* Honeypot field — hidden from real users, off-canvas rather than
@@ -204,7 +204,7 @@ export default function Hero() {
                   aria-hidden="true"
                 />
                 <Image
-                  src="/app-screenshot.png"
+                  src="/app-screenshot.jpg"
                   alt="Stage List inventory screen on iPhone, showing a searchable, filterable list of staging pieces"
                   fill
                   sizes="(min-width: 640px) 260px, 220px"
