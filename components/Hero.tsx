@@ -89,7 +89,7 @@ function AndroidInterestForm() {
         value={email}
         onChange={(event) => setEmail(event.target.value)}
         disabled={status === "submitting"}
-        className="w-48 rounded-full border border-line bg-paper px-4 py-2 text-base text-ink placeholder:text-ink-soft/60 transition-[border-color,box-shadow] duration-300 ease-out focus-visible:border-clay disabled:opacity-60"
+        className="w-48 rounded-full border border-line bg-paper px-4 py-2 text-base text-ink placeholder:text-ink-soft/80 transition-[border-color,box-shadow] duration-300 ease-out focus-visible:border-clay disabled:opacity-60"
       />
 
       {/* Honeypot field — hidden from real users, off-canvas rather than
@@ -114,7 +114,7 @@ function AndroidInterestForm() {
       >
         Android? Register interest
       </button>
-      <a href="/privacy" className="link-sweep text-xs text-ink-soft/70">
+      <a href="/privacy" className="link-sweep text-xs text-ink-soft/80">
         Privacy Policy
       </a>
     </form>

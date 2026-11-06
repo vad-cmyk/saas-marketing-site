@@ -28,7 +28,7 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Nav />
-      <main className="flex-1">
+      <main id="main-content" className="flex-1">
         <Hero />
         <Features />
         <Audience />

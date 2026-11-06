@@ -34,7 +34,7 @@ export default function InventoryPage() {
         placeholder="Search name, colour, description"
         value={search}
         onChange={(event) => setSearch(event.target.value)}
-        className="mt-4 w-full max-w-md rounded-full border border-line bg-paper px-5 py-3 text-sm text-ink placeholder:text-ink-soft/60 transition-[border-color,box-shadow] duration-300 ease-out focus-visible:border-clay"
+        className="mt-4 w-full max-w-md rounded-full border border-line bg-paper px-5 py-3 text-sm text-ink placeholder:text-ink-soft/80 transition-[border-color,box-shadow] duration-300 ease-out focus-visible:border-clay"
       />
 
       {categories && categories.length > 0 && (

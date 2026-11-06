@@ -86,7 +86,7 @@ export default async function ProposalPage({
             <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3 text-sm text-ink-soft">
               {client_name && (
                 <span>
-                  <span className="text-ink-soft/70">Prepared for </span>
+                  <span className="text-ink-soft/80">Prepared for </span>
                   <span className="font-medium text-ink">{client_name}</span>
                 </span>
               )}
@@ -95,7 +95,7 @@ export default async function ProposalPage({
               )}
               {stage_date && (
                 <span>
-                  <span className="text-ink-soft/70">Staging date </span>
+                  <span className="text-ink-soft/80">Staging date </span>
                   <span className="font-medium text-ink">{stage_date}</span>
                 </span>
               )}

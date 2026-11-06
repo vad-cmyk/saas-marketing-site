@@ -2,7 +2,14 @@ import Image from "next/image";
 
 export default function Nav() {
   return (
-    <header className="sticky top-0 z-50 border-b border-line/70 bg-cream/85 backdrop-blur">
+    <>
+      <a
+        href="#main-content"
+        className="sr-only focus-visible:not-sr-only focus-visible:fixed focus-visible:top-4 focus-visible:left-4 focus-visible:z-[100] focus-visible:rounded-full focus-visible:bg-clay focus-visible:px-5 focus-visible:py-2.5 focus-visible:text-sm focus-visible:font-semibold focus-visible:text-paper"
+      >
+        Skip to content
+      </a>
+      <header className="sticky top-0 z-50 border-b border-line/70 bg-cream/85 backdrop-blur">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4 sm:px-8">
         <a
           href="#top"
@@ -36,6 +43,7 @@ export default function Nav() {
           Start free trial
         </a>
       </nav>
-    </header>
+      </header>
+    </>
   );
 }

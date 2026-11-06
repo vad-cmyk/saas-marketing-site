@@ -42,7 +42,7 @@ export default function CompareStageforce() {
   return (
     <>
       <Nav />
-      <main className="flex-1 bg-cream">
+      <main id="main-content" className="flex-1 bg-cream">
         <div className="mx-auto max-w-4xl px-6 py-20 sm:px-8">
           <h1 className="text-3xl text-ink sm:text-4xl">
             Stage List vs Stageforce

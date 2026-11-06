@@ -88,7 +88,7 @@ export default function SetPassword() {
           </a>
 
           <p
-            className="anim-fadeup mt-4 text-xs text-ink-soft/70"
+            className="anim-fadeup mt-4 text-xs text-ink-soft/80"
             style={{ animationDelay: "400ms" }}
           >
             Stage List is currently available via Apple TestFlight ahead of
@@ -135,7 +135,7 @@ export default function SetPassword() {
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 disabled={isSaving}
-                className="w-full rounded-full border border-line bg-paper px-5 py-3 text-sm text-ink placeholder:text-ink-soft/60 transition-[border-color,box-shadow] duration-300 ease-out focus-visible:border-clay disabled:opacity-60"
+                className="w-full rounded-full border border-line bg-paper px-5 py-3 text-sm text-ink placeholder:text-ink-soft/80 transition-[border-color,box-shadow] duration-300 ease-out focus-visible:border-clay disabled:opacity-60"
               />
             </div>
 

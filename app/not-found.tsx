@@ -12,7 +12,7 @@ export default function NotFound() {
   return (
     <>
       <Nav />
-      <main className="mx-auto flex min-h-[60vh] max-w-3xl flex-col items-center justify-center px-6 py-20 text-center sm:px-8">
+      <main id="main-content" className="mx-auto flex min-h-[60vh] max-w-3xl flex-col items-center justify-center px-6 py-20 text-center sm:px-8">
         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-sage-deep">
           404
         </p>
