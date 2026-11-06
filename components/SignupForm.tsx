@@ -63,7 +63,7 @@ export default function SignupForm({ plan }: { plan: "monthly" | "yearly" | "fou
         );
       }
 
-      track("trial_signup_started");
+      track("trial_signup_started", { plan });
       window.location.href = data.url;
     } catch (err) {
       setStatus("error");
