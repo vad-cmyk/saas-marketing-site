@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Terms of Service — Stage List",
+  description:
+    "The terms for using Stage List: trial and subscription details, acceptable use, data ownership, liability, and how to cancel.",
+  alternates: { canonical: "/terms" },
 };
 
 export default function TermsOfService() {

@@ -25,6 +25,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://thestagelist.com"),
   title: "Stage List — Inventory & job allocation for property stagers",
   description: siteDescription,
+  alternates: { canonical: "/" },
   openGraph: {
     title: "Stage List — Inventory & job allocation for property stagers",
     description: siteDescription,

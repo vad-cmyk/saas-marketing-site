@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Privacy Policy — Stage List",
+  description:
+    "How Stage List collects, uses, and protects your business and account data, including what we share with Stripe, Supabase, and other service providers.",
+  alternates: { canonical: "/privacy" },
 };
 
 export default function PrivacyPolicy() {

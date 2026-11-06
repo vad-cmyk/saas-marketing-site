@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "Stage List vs Stageforce — Compared",
   description:
     "How Stage List compares to Stageforce for property stagers: pricing, interface, and what each tool actually includes.",
+  alternates: { canonical: "/compare/stageforce" },
 };
 
 const rows: Array<[string, string, string]> = [

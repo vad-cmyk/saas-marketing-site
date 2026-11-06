@@ -1,3 +1,10 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "You're in — Stage List",
+  robots: { index: false, follow: false },
+};
+
 export default function Welcome() {
   return (
     <main

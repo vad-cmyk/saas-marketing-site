@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Support — Stage List",
+  description:
+    "Get help with Stage List: how to get started, add your team, manage your subscription, or reach us directly at hello@thestagelist.com.",
+  alternates: { canonical: "/support" },
 };
 
 const faqs = [
