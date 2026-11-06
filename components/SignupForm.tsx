@@ -136,6 +136,14 @@ export default function SignupForm({ plan }: { plan: "monthly" | "yearly" | "fou
         {isSubmitting ? "Starting your trial…" : "Start free trial"}
       </button>
 
+      <p className="pt-1 text-center text-xs text-ink-soft/80">
+        We&rsquo;ll only use your details to set up your account. See our{" "}
+        <a href="/privacy" className="link-sweep text-ink-soft">
+          Privacy Policy
+        </a>
+        .
+      </p>
+
       {error && (
         <p role="alert" className="pt-1 text-center text-sm text-clay-deep">
           {error}

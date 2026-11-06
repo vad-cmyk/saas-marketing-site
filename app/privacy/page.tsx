@@ -8,7 +8,7 @@ export default function PrivacyPolicy() {
   return (
     <main className="mx-auto max-w-3xl px-6 py-20 sm:px-8">
       <h1 className="text-3xl text-ink sm:text-4xl">Privacy Policy</h1>
-      <p className="mt-3 text-sm text-ink-soft">Last updated: 27 September 2026</p>
+      <p className="mt-3 text-sm text-ink-soft">Last updated: 6 November 2026</p>
 
       <div className="mt-10 space-y-8 text-base leading-relaxed text-ink-soft">
         <p>
@@ -60,8 +60,13 @@ export default function PrivacyPolicy() {
         <section>
           <h2 className="font-display text-xl text-ink">Cookies and tracking</h2>
           <p className="mt-3">
-            We do not use cookies. Our analytics tool collects anonymous usage
-            statistics without cookies or personal identifiers.
+            We don&rsquo;t use cookies for tracking, advertising, or analytics. Vercel
+            Analytics, our website analytics provider, works without cookies or personal
+            identifiers and only produces anonymous, aggregate statistics. If you sign in
+            to use Stage List, we set one strictly necessary cookie to keep you signed in
+            between visits — this doesn&rsquo;t require consent under UK cookie law, since
+            it&rsquo;s essential to providing the service you&rsquo;ve signed up for, and
+            we don&rsquo;t use it for anything else.
           </p>
         </section>
 
@@ -87,6 +92,11 @@ export default function PrivacyPolicy() {
             <li>
               <strong className="text-ink">Apple</strong> — distributing the Stage List
               mobile app via TestFlight and the App Store.
+            </li>
+            <li>
+              <strong className="text-ink">Vercel</strong> — hosts this website and our
+              app&rsquo;s backend, and as part of that sees standard web server logs
+              (including visitor IP addresses).
             </li>
           </ul>
           <p className="mt-3">

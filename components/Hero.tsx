@@ -114,6 +114,9 @@ function AndroidInterestForm() {
       >
         Android? Register interest
       </button>
+      <a href="/privacy" className="link-sweep text-xs text-ink-soft/70">
+        Privacy Policy
+      </a>
     </form>
   );
 }
