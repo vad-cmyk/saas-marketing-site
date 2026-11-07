@@ -78,21 +78,20 @@ export default function SetPassword() {
           </p>
 
           <a
-            href="https://testflight.apple.com/join/vSncXcSg"
+            href="https://apps.apple.com/us/app/stage-list-inventory/id6809767671"
             target="_blank"
             rel="noopener noreferrer"
             className="anim-fadeup mt-7 inline-block rounded-full bg-clay px-7 py-3.5 text-base font-semibold text-paper shadow-[0_12px_30px_-10px_rgba(156,68,35,0.6)] transition-[transform,background-color,box-shadow,opacity] duration-300 ease-out hover:-translate-y-0.5 hover:bg-clay-deep hover:shadow-[0_18px_36px_-10px_rgba(156,68,35,0.7)] active:translate-y-0"
             style={{ animationDelay: "340ms" }}
           >
-            Get Stage List on TestFlight
+            Get Stage List on the App Store
           </a>
 
           <p
             className="anim-fadeup mt-4 text-xs text-ink-soft/80"
             style={{ animationDelay: "400ms" }}
           >
-            Stage List is currently available via Apple TestFlight ahead of
-            its full App Store release.
+            Available now on the App Store.
           </p>
         </div>
       ) : (

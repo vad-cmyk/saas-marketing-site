@@ -4,8 +4,8 @@ import { useState, type FormEvent } from "react";
 import Image from "next/image";
 import { track } from "@vercel/analytics";
 
-// [TODO VAD: App Store URL once approved]
-const APP_STORE_URL: string | null = null;
+const APP_STORE_URL: string | null =
+  "https://apps.apple.com/us/app/stage-list-inventory/id6809767671";
 
 function AppStoreBadge() {
   const content = (
