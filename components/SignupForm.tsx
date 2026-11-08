@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { track } from "@vercel/analytics";
+import TurnstileWidget from "./TurnstileWidget";
 
 type Status = "idle" | "submitting" | "error";
 
@@ -12,6 +13,7 @@ export default function SignupForm({ plan }: { plan: "monthly" | "yearly" | "fou
   // Time trap: set once at mount, sent back on submit. A real visitor takes
   // at least a couple of seconds to read the form and type into it.
   const [startedAt] = useState(() => Date.now());
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
 
@@ -52,6 +54,7 @@ export default function SignupForm({ plan }: { plan: "monthly" | "yearly" | "fou
           website,
           startedAt,
           plan,
+          turnstileToken,
         }),
       });
 
@@ -126,6 +129,10 @@ export default function SignupForm({ plan }: { plan: "monthly" | "yearly" | "fou
           value={website}
           onChange={(event) => setWebsite(event.target.value)}
         />
+      </div>
+
+      <div className="flex justify-center">
+        <TurnstileWidget onToken={setTurnstileToken} />
       </div>
 
       <button

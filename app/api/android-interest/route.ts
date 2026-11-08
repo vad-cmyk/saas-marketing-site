@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { isValidEmail, submittedTooFast } from "@/lib/formValidation";
+import { verifyTurnstileToken, getClientIp } from "@/lib/turnstile";
 
 export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => null);
@@ -12,6 +13,14 @@ export async function POST(request: NextRequest) {
   const honeypot = typeof body?.website === "string" ? body.website.trim() : "";
   if (honeypot || submittedTooFast(body?.startedAt)) {
     return NextResponse.json({ ok: true });
+  }
+
+  const turnstileOk = await verifyTurnstileToken(body?.turnstileToken, getClientIp(request));
+  if (!turnstileOk) {
+    return NextResponse.json(
+      { error: "Verification failed — please try again." },
+      { status: 400 },
+    );
   }
 
   if (!isValidEmail(body?.email)) {

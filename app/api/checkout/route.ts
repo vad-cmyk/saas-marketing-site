@@ -4,9 +4,10 @@ import { stripe, STAGE_LIST_PRICE_IDS, type BillingPlan } from '@/lib/stripe';
 import { getFounderAvailability } from '@/lib/founderAvailability';
 import { stripeErrorResponse } from '@/lib/stripeErrorResponse';
 import { isValidEmail, isValidBusinessName, submittedTooFast } from '@/lib/formValidation';
+import { verifyTurnstileToken, getClientIp } from '@/lib/turnstile';
 
 export async function POST(request: NextRequest) {
-  const { email, businessName, website, startedAt, plan } = await request.json();
+  const { email, businessName, website, startedAt, plan, turnstileToken } = await request.json();
 
   // Defense in depth: the signup form's client-side honeypot field and time
   // trap should already stop bots before this request is sent, but don't
@@ -15,6 +16,14 @@ export async function POST(request: NextRequest) {
   const isHoneypotFilled = typeof website === 'string' && website.trim();
   if (isHoneypotFilled || submittedTooFast(startedAt)) {
     return NextResponse.json({ error: 'email and businessName are required' }, { status: 400 });
+  }
+
+  const turnstileOk = await verifyTurnstileToken(turnstileToken, getClientIp(request));
+  if (!turnstileOk) {
+    return NextResponse.json(
+      { error: 'Verification failed — please try again.' },
+      { status: 400 },
+    );
   }
 
   if (!isValidEmail(email)) {

@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import Image from "next/image";
 import { track } from "@vercel/analytics";
+import TurnstileWidget from "./TurnstileWidget";
 
 const APP_STORE_URL: string | null =
   "https://apps.apple.com/us/app/stage-list-inventory/id6809767671";
@@ -47,6 +48,7 @@ function AndroidInterestForm() {
   // Time trap: set once at mount, sent back on submit. A real visitor takes
   // at least a couple of seconds to read the form and type into it.
   const [startedAt] = useState(() => Date.now());
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [status, setStatus] = useState<"idle" | "submitting" | "done">("idle");
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -64,7 +66,7 @@ function AndroidInterestForm() {
       await fetch("/api/android-interest", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: trimmed, website, startedAt }),
+        body: JSON.stringify({ email: trimmed, website, startedAt, turnstileToken }),
       });
     } catch {
       // Intentionally swallow — we show a confirmation regardless, there's
@@ -108,6 +110,8 @@ function AndroidInterestForm() {
           onChange={(event) => setWebsite(event.target.value)}
         />
       </div>
+
+      <TurnstileWidget onToken={setTurnstileToken} size="compact" />
 
       <button
         type="submit"
