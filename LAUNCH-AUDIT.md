@@ -66,8 +66,8 @@ Everything that could be fixed in code has been. The one ⚠️ (business identi
 
 ## Client actions (so far)
 
-- [ ] Decide whether to add Vercel Firewall rate-limiting on `/api/checkout` and `/api/android-interest` (dashboard setting, no code change)
-- [ ] Decide whether Cloudflare Turnstile is worth adding given real spam volume once the site has more traffic
+- [x] **Vercel Firewall rate-limiting** — set up 2026-11-07. Hobby plan only allows one true rate-limit rule per project, so `/api/checkout` (the more sensitive endpoint — calls Stripe) got the real rate limit; `/api/android-interest` is set to Log only (visibility, not blocking) rather than paying for Pro just for a second rule.
+- [x] **Cloudflare Turnstile** — added 2026-11-08 to both the signup form and the Android-interest form, with server-side verification in both API routes (`lib/turnstile.ts`). Verified end-to-end locally: widget renders and passes, server accepts the resulting token via Cloudflare's real siteverify API, submission succeeds.
 - [ ] **Confirm your full legal name** for the Terms page placeholder (`[TODO VAD: your full legal name]`) — required by UK law to identify an unregistered/sole-trader business, separate from the trading name
 - [ ] Once "The Stage List" is actually incorporated: replace the same Terms placeholder with the company number and "registered in England and Wales"
 - [ ] Review both legal pages (privacy and terms) — these are solid drafts, not legal advice; a solicitor review is worth it before relying on them at scale
