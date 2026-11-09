@@ -1,12 +1,14 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useMyOrganization, useUpdateOrganizationBranding, photoUrl } from '@/lib/queries';
 import { uploadLogo } from '@/lib/photos';
 
 const HEX_COLOR_RE = /^#[0-9a-fA-F]{6}$/;
 
 export default function BrandingPage() {
+  const router = useRouter();
   const { data: org, isLoading, isError } = useMyOrganization();
   const updateBranding = useUpdateOrganizationBranding();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -79,6 +81,13 @@ export default function BrandingPage() {
         },
       });
       setSaved(true);
+      // The sidebar/dashboard shell renders the org name from a server
+      // component (app/dashboard/layout.tsx's own getMyOrganization() call,
+      // not this page's client-side React Query cache) — invalidating the
+      // client cache alone left it showing the old name until a manual
+      // reload. router.refresh() re-runs the server tree so it picks up
+      // the save immediately. Confirmed live 2026-11-09.
+      router.refresh();
     } catch (err) {
       setSaveError(err instanceof Error ? err.message : 'Could not save changes');
     }
