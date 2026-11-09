@@ -7,6 +7,29 @@ import { uploadLogo } from '@/lib/photos';
 
 const HEX_COLOR_RE = /^#[0-9a-fA-F]{6}$/;
 
+// Keeps the client-facing proposal page's tel: links dialable from any
+// country, not just a UK handset. Accepts a UK local number (converts
+// 0xxx -> +44xxx) or an already-international +xx number; anything else
+// is rejected with a specific example rather than a generic "invalid".
+function normalizePhone(raw: string): { value: string | null; error: string | null } {
+  const trimmed = raw.trim();
+  if (!trimmed) return { value: null, error: null };
+
+  const digitsAndPlus = trimmed.replace(/[^\d+]/g, '');
+
+  if (/^0\d{9,10}$/.test(digitsAndPlus)) {
+    return { value: `+44${digitsAndPlus.slice(1)}`, error: null };
+  }
+  if (/^\+\d{7,15}$/.test(digitsAndPlus)) {
+    return { value: digitsAndPlus, error: null };
+  }
+
+  return {
+    value: null,
+    error: 'Enter a UK number (07700 900123) or international format (+447700900123).',
+  };
+}
+
 export default function BrandingPage() {
   const router = useRouter();
   const { data: org, isLoading, isError } = useMyOrganization();
@@ -69,6 +92,11 @@ export default function BrandingPage() {
       setSaveError('Enter a hex colour like #9C4423, or leave it blank.');
       return;
     }
+    const { value: normalizedPhone, error: phoneError } = normalizePhone(contactPhone);
+    if (phoneError) {
+      setSaveError(phoneError);
+      return;
+    }
     try {
       await updateBranding.mutateAsync({
         orgId: org.id,
@@ -77,7 +105,7 @@ export default function BrandingPage() {
           ...(logoPath ? { logo_url: photoUrl(logoPath) } : {}),
           brand_color: brandColor || null,
           contact_email: contactEmail || null,
-          contact_phone: contactPhone || null,
+          contact_phone: normalizedPhone,
         },
       });
       setSaved(true);
@@ -234,10 +262,12 @@ export default function BrandingPage() {
             Contact phone
           </label>
           <input
-            type="text"
+            type="tel"
+            inputMode="tel"
+            placeholder="07700 900123"
             value={contactPhone}
             onChange={(e) => setContactPhone(e.target.value)}
-            className="w-full rounded-xl border border-line bg-paper px-4 py-3 text-sm text-ink"
+            className="w-full rounded-xl border border-line bg-paper px-4 py-3 text-sm text-ink placeholder:text-ink-soft/80"
           />
         </div>
       </div>
