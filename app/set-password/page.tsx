@@ -1,34 +1,100 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { supabase } from "@/lib/supabase";
 
-type Status = "idle" | "saving" | "done" | "error";
+type Step = "checking" | "code" | "password" | "done";
+type SaveStatus = "idle" | "saving" | "error";
+type CodeStatus = "idle" | "verifying" | "error";
 
 export default function SetPassword() {
-  const [password, setPassword] = useState("");
-  const [status, setStatus] = useState<Status>("idle");
-  const [error, setError] = useState<string | null>(null);
+  // The email link should establish a session automatically via Supabase's
+  // own redirect — but corporate email security (Microsoft 365 Safe Links,
+  // and similar products) silently "pre-visits" every link in an incoming
+  // email to scan it, burning the one-time link before the person ever
+  // taps it themselves. Confirmed live 2026-11-09 with a real customer on
+  // Microsoft 365: that single automated visit was enough to invalidate the
+  // link, so by the time she clicked it, no session came through at all.
+  //
+  // There's no way to make a clickable link immune to that (it's an
+  // automated visit indistinguishable from a real one), so the fix is a
+  // fallback that doesn't depend on a link being clicked exactly once by a
+  // human: the recovery email also carries a plain-text code, which a
+  // scanner can't "use" just by reading the email body.
+  const [step, setStep] = useState<Step>("checking");
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  const [email, setEmail] = useState("");
+  const [code, setCode] = useState("");
+  const [codeStatus, setCodeStatus] = useState<CodeStatus>("idle");
+  const [codeError, setCodeError] = useState<string | null>(null);
+
+  const [password, setPassword] = useState("");
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
+  const [saveError, setSaveError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function checkSession() {
+      // Give the client a moment to process any auth tokens in the URL
+      // (set by Supabase's redirect) before deciding there's no session.
+      const { data } = await supabase.auth.getSession();
+      if (cancelled) return;
+      setStep(data.session ? "password" : "code");
+    }
+
+    checkSession();
+
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) setStep((current) => (current === "done" ? current : "password"));
+    });
+
+    return () => {
+      cancelled = true;
+      listener.subscription.unsubscribe();
+    };
+  }, []);
+
+  async function handleCodeSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setStatus("saving");
-    setError(null);
+    setCodeStatus("verifying");
+    setCodeError(null);
+
+    const { error } = await supabase.auth.verifyOtp({
+      email: email.trim(),
+      token: code.trim(),
+      type: "recovery",
+    });
+
+    if (error) {
+      setCodeStatus("error");
+      setCodeError("That code didn't work — check it and try again.");
+      return;
+    }
+
+    setStep("password");
+  }
+
+  async function handlePasswordSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setSaveStatus("saving");
+    setSaveError(null);
 
     const { error: updateError } = await supabase.auth.updateUser({
       password,
     });
 
     if (updateError) {
-      setError(updateError.message);
-      setStatus("error");
+      setSaveError(updateError.message);
+      setSaveStatus("error");
       return;
     }
 
-    setStatus("done");
+    setStep("done");
   }
 
-  const isSaving = status === "saving";
+  const isSaving = saveStatus === "saving";
+  const isVerifyingCode = codeStatus === "verifying";
 
   return (
     <main
@@ -38,7 +104,7 @@ export default function SetPassword() {
           "radial-gradient(ellipse 60% 50% at 15% 10%, rgba(188,86,46,0.14), transparent 60%), radial-gradient(ellipse 55% 45% at 90% 15%, rgba(85,98,74,0.14), transparent 60%), radial-gradient(ellipse 70% 60% at 50% 100%, rgba(188,86,46,0.08), transparent 65%)",
       }}
     >
-      {status === "done" ? (
+      {step === "done" ? (
         <div
           className="anim-fadescale relative z-10 mx-auto w-full max-w-lg overflow-hidden rounded-[1.75rem] border border-line bg-paper p-10 shadow-[0_30px_70px_-30px_rgba(33,28,23,0.35)] sm:p-14"
           style={{ animationDelay: "0ms" }}
@@ -94,6 +160,89 @@ export default function SetPassword() {
             Available now on the App Store.
           </p>
         </div>
+      ) : step === "checking" ? (
+        <div
+          className="anim-fadescale relative z-10 mx-auto w-full max-w-lg overflow-hidden rounded-[1.75rem] border border-line bg-paper p-10 shadow-[0_30px_70px_-30px_rgba(33,28,23,0.35)] sm:p-14"
+          style={{ animationDelay: "0ms" }}
+        >
+          <p className="text-lg text-ink-soft">One moment…</p>
+        </div>
+      ) : step === "code" ? (
+        <div
+          className="anim-fadescale relative z-10 mx-auto w-full max-w-lg overflow-hidden rounded-[1.75rem] border border-line bg-paper p-10 shadow-[0_30px_70px_-30px_rgba(33,28,23,0.35)] sm:p-14"
+          style={{ animationDelay: "0ms" }}
+        >
+          <h1
+            className="anim-fadeup text-3xl text-ink sm:text-4xl"
+            style={{ animationDelay: "80ms" }}
+          >
+            Enter your code
+          </h1>
+
+          <p
+            className="anim-fadeup mx-auto mt-5 max-w-md text-balance text-lg text-ink-soft"
+            style={{ animationDelay: "170ms" }}
+          >
+            The link didn&rsquo;t carry a valid session through — this can
+            happen if your email provider scans links automatically. Enter
+            the 6-digit code from the same email instead.
+          </p>
+
+          <form
+            onSubmit={handleCodeSubmit}
+            className="anim-fadeup mt-9 space-y-3 text-left"
+            style={{ animationDelay: "260ms" }}
+            noValidate
+          >
+            <div>
+              <label htmlFor="email" className="sr-only">
+                Email
+              </label>
+              <input
+                id="email"
+                type="email"
+                required
+                autoComplete="email"
+                placeholder="Email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                disabled={isVerifyingCode}
+                className="w-full rounded-full border border-line bg-paper px-5 py-3 text-sm text-ink placeholder:text-ink-soft/80 transition-[border-color,box-shadow] duration-300 ease-out focus-visible:border-clay disabled:opacity-60"
+              />
+            </div>
+            <div>
+              <label htmlFor="code" className="sr-only">
+                6-digit code
+              </label>
+              <input
+                id="code"
+                type="text"
+                inputMode="numeric"
+                required
+                autoComplete="one-time-code"
+                placeholder="6-digit code"
+                value={code}
+                onChange={(event) => setCode(event.target.value)}
+                disabled={isVerifyingCode}
+                className="w-full rounded-full border border-line bg-paper px-5 py-3 text-center text-sm tracking-[0.3em] text-ink placeholder:text-ink-soft/80 placeholder:tracking-normal transition-[border-color,box-shadow] duration-300 ease-out focus-visible:border-clay disabled:opacity-60"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={isVerifyingCode}
+              className="mt-3 block w-full rounded-full bg-clay px-7 py-3.5 text-base font-semibold text-paper shadow-[0_12px_30px_-10px_rgba(156,68,35,0.6)] transition-[transform,background-color,box-shadow,opacity] duration-300 ease-out hover:-translate-y-0.5 hover:bg-clay-deep hover:shadow-[0_18px_36px_-10px_rgba(156,68,35,0.7)] active:translate-y-0 disabled:pointer-events-none disabled:opacity-70"
+            >
+              {isVerifyingCode ? "Checking…" : "Continue"}
+            </button>
+
+            {codeError && (
+              <p role="alert" className="pt-1 text-center text-sm text-clay-deep">
+                {codeError}
+              </p>
+            )}
+          </form>
+        </div>
       ) : (
         <div
           className="anim-fadescale relative z-10 mx-auto w-full max-w-lg overflow-hidden rounded-[1.75rem] border border-line bg-paper p-10 shadow-[0_30px_70px_-30px_rgba(33,28,23,0.35)] sm:p-14"
@@ -115,7 +264,7 @@ export default function SetPassword() {
           </p>
 
           <form
-            onSubmit={handleSubmit}
+            onSubmit={handlePasswordSubmit}
             className="anim-fadeup mt-9 space-y-3 text-left"
             style={{ animationDelay: "260ms" }}
             noValidate
@@ -146,9 +295,9 @@ export default function SetPassword() {
               {isSaving ? "Saving…" : "Set password"}
             </button>
 
-            {error && (
+            {saveError && (
               <p role="alert" className="pt-1 text-center text-sm text-clay-deep">
-                {error}
+                {saveError}
               </p>
             )}
           </form>
