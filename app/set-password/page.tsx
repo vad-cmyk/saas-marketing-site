@@ -196,7 +196,7 @@ export default function SetPassword() {
           >
             The link didn&rsquo;t carry a valid session through — this can
             happen if your email provider scans links automatically. Enter
-            the 6-digit code from the same email instead.
+            the code from the same email instead.
           </p>
 
           <form
@@ -223,7 +223,7 @@ export default function SetPassword() {
             </div>
             <div>
               <label htmlFor="code" className="sr-only">
-                6-digit code
+                Code from email
               </label>
               <input
                 id="code"
@@ -231,7 +231,7 @@ export default function SetPassword() {
                 inputMode="numeric"
                 required
                 autoComplete="one-time-code"
-                placeholder="6-digit code"
+                placeholder="Code from email"
                 value={code}
                 onChange={(event) => setCode(event.target.value)}
                 disabled={isVerifyingCode}
