@@ -12,6 +12,7 @@ export default function BrandingPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [logoPath, setLogoPath] = useState<string | null>(null);
+  const [businessName, setBusinessName] = useState('');
   const [brandColor, setBrandColor] = useState('');
   const [contactEmail, setContactEmail] = useState('');
   const [contactPhone, setContactPhone] = useState('');
@@ -28,6 +29,7 @@ export default function BrandingPage() {
   useEffect(() => {
     if (org && !seeded) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
+      setBusinessName(org.name ?? '');
       setBrandColor(org.brand_color ?? '');
       setContactEmail(org.contact_email ?? '');
       setContactPhone(org.contact_phone ?? '');
@@ -56,6 +58,11 @@ export default function BrandingPage() {
     if (!org) return;
     setSaveError(null);
     setSaved(false);
+    const trimmedName = businessName.trim();
+    if (!trimmedName) {
+      setSaveError('Business name can’t be empty.');
+      return;
+    }
     if (brandColor && !HEX_COLOR_RE.test(brandColor)) {
       setSaveError('Enter a hex colour like #9C4423, or leave it blank.');
       return;
@@ -64,6 +71,7 @@ export default function BrandingPage() {
       await updateBranding.mutateAsync({
         orgId: org.id,
         updates: {
+          name: trimmedName,
           ...(logoPath ? { logo_url: photoUrl(logoPath) } : {}),
           brand_color: brandColor || null,
           contact_email: contactEmail || null,
@@ -90,6 +98,12 @@ export default function BrandingPage() {
         <h1 className="font-display text-3xl text-ink">Branding</h1>
         <p className="mt-2 text-ink-soft">Only the account owner can edit business branding.</p>
         <div className="mt-6 max-w-md space-y-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-ink-soft">
+              Business name
+            </p>
+            <p className="mt-1 text-sm text-ink">{org.name}</p>
+          </div>
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-ink-soft">Logo</p>
             {org.logo_url ? (
@@ -132,6 +146,22 @@ export default function BrandingPage() {
       <p className="mt-2 text-ink-soft">
         This appears on the staging proposals you send to clients.
       </p>
+
+      <div className="mt-6">
+        <label
+          htmlFor="businessName"
+          className="mb-1 block text-xs font-semibold uppercase tracking-wide text-ink-soft"
+        >
+          Business name
+        </label>
+        <input
+          id="businessName"
+          type="text"
+          value={businessName}
+          onChange={(e) => setBusinessName(e.target.value)}
+          className="w-full rounded-xl border border-line bg-paper px-4 py-3 text-sm text-ink"
+        />
+      </div>
 
       <div className="mt-6">
         <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink-soft">Logo</p>

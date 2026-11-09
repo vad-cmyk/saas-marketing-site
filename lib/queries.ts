@@ -565,21 +565,39 @@ export function useMyOrganization() {
   return useQuery({
     queryKey: ['my-organization'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('memberships')
-        .select(
-          'role, organizations(id, name, subscription_status, trial_ends_at, logo_url, brand_color, contact_email, contact_phone)',
-        )
-        .limit(1)
-        .maybeSingle();
+      // Same bug and same fix as lib/get-my-organization.ts (the
+      // server-rendered dashboard shell's version of this query): a person
+      // can belong to more than one organization, and `.limit(1)` with no
+      // order let Postgres return any matching membership — confirmed live
+      // 2026-11-09 as a stale/wrong org showing up. Fetch all memberships
+      // and pick the organization with the most recent created_at, since
+      // PostgREST's order-on-embedded-table only reorders nested arrays in
+      // a one-to-many embed, not which row comes first for this to-one
+      // join.
+      const { data, error } = await supabase.from('memberships').select(
+        'role, organizations(id, name, subscription_status, trial_ends_at, logo_url, brand_color, contact_email, contact_phone, created_at)',
+      );
       if (error) throw error;
-      if (!data?.organizations) return null;
-      return { ...data.organizations, my_role: data.role } as unknown as MyOrganization;
+      if (!data || data.length === 0) return null;
+
+      type Row = { role: string; organizations: MyOrganization & { created_at: string } };
+      const rows = data as unknown as Row[];
+      const withOrg = rows.filter((row) => row.organizations != null);
+      if (withOrg.length === 0) return null;
+
+      const newest = withOrg.sort(
+        (a, b) =>
+          new Date(b.organizations.created_at).getTime() -
+          new Date(a.organizations.created_at).getTime(),
+      )[0];
+
+      return { ...newest.organizations, my_role: newest.role } as MyOrganization;
     },
   });
 }
 
 export interface OrganizationBrandingUpdate {
+  name?: string;
   logo_url?: string | null;
   brand_color?: string | null;
   contact_email?: string | null;
