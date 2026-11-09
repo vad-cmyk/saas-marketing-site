@@ -11,16 +11,14 @@ export default function TermsOfService() {
   return (
     <main className="mx-auto max-w-3xl px-6 py-20 sm:px-8">
       <h1 className="text-3xl text-ink sm:text-4xl">Terms of Service</h1>
-      <p className="mt-3 text-sm text-ink-soft">Last updated: 6 November 2026</p>
+      <p className="mt-3 text-sm text-ink-soft">Last updated: 9 November 2026</p>
 
       <div className="mt-10 space-y-8 text-base leading-relaxed text-ink-soft">
         <p>
           These terms govern your use of Stage List. References to &ldquo;we&rdquo;,
           &ldquo;us&rdquo;, or &ldquo;Stage List&rdquo; mean The Stage List, trading at
-          14 Tipperary Avenue, NR18 0ZA
-          ([TODO VAD: your full legal name — UK law requires a sole trader/unregistered
-          business to be identified by the owner&rsquo;s actual name alongside a trading
-          name; once The Stage List is incorporated, replace this whole line with the
+          14 Tipperary Avenue, NR18 0ZA (Vadim Harbuz
+          [TODO VAD: once The Stage List is incorporated, replace this name with the
           registered company name, company number, and &ldquo;registered in England and
           Wales&rdquo;]). By signing up for or using Stage List, you agree to these
           terms. This document is written in plain English and is not a substitute for
