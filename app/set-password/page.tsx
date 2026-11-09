@@ -60,19 +60,30 @@ export default function SetPassword() {
     setCodeStatus("verifying");
     setCodeError(null);
 
-    const { error } = await supabase.auth.verifyOtp({
-      email: email.trim(),
-      token: code.trim(),
-      type: "recovery",
-    });
+    const trimmedEmail = email.trim();
+    const trimmedCode = code.trim();
 
-    if (error) {
-      setCodeStatus("error");
-      setCodeError("That code didn't work — check it and try again.");
-      return;
+    // This same page and code-entry fallback serves two different kinds of
+    // link: a password reset for an existing customer, and a first-time
+    // invite for a brand-new one. Supabase tracks those as different OTP
+    // "types" even though the email's {{ .Token }} field looks identical —
+    // try recovery first (the more common case reaching this fallback),
+    // then invite, rather than asking the person which kind of email they
+    // got.
+    for (const type of ["recovery", "invite"] as const) {
+      const { error } = await supabase.auth.verifyOtp({
+        email: trimmedEmail,
+        token: trimmedCode,
+        type,
+      });
+      if (!error) {
+        setStep("password");
+        return;
+      }
     }
 
-    setStep("password");
+    setCodeStatus("error");
+    setCodeError("That code didn't work — check it and try again.");
   }
 
   async function handlePasswordSubmit(event: FormEvent<HTMLFormElement>) {
